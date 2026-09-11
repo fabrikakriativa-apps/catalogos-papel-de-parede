@@ -6,10 +6,8 @@ import io
 import json
 import re
 from pathlib import Path
-from urllib.parse import urljoin
 
 import requests
-from bs4 import BeautifulSoup
 from PIL import Image, ImageOps
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -17,8 +15,6 @@ DATA_DIR = ROOT / 'dados' / 'colecoes'
 OUT = ROOT / 'imagens' / 'home-finish'
 MANIFEST = ROOT / 'dados' / 'biblioteca-imagens.json'
 
-# BIO Habitat que permaneciam apenas com hotlink no catálogo.
-# A origem é exclusivamente a página/JPG oficial da Home Finish.
 TARGETS = [
     '101041', '101042', '101043', '101044', '101036', '101016', '101014',
     '101022', '101019', '101020', '101011', '101010', '101038', '101032',
@@ -26,10 +22,7 @@ TARGETS = [
     '101026', '101025', '101018', '101040', '101039', '101045', '101046',
 ]
 
-UA = (
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-    'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152 Safari/537.36'
-)
+UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/152 Safari/537.36'
 
 
 def norm(ref):
@@ -64,37 +57,8 @@ def load_home_finish_records():
     return by_norm
 
 
-def official_candidates(session, target):
-    page_url = f'https://homefinish.com.br/papel-de-parede/{target}/'
-    response = session.get(page_url, timeout=45)
-    response.raise_for_status()
-    soup = BeautifulSoup(response.text, 'html.parser')
+def candidates(target):
     out = []
-
-    def add(url):
-        if not url:
-            return
-        full = urljoin(page_url, url)
-        if 'homefinish.com.br' not in full:
-            return
-        if full not in out:
-            out.append(full)
-
-    # Prioridade absoluta: o link oficial BAIXAR JPG da própria página da referência.
-    for a in soup.find_all('a', href=True):
-        text = a.get_text(' ', strip=True).upper()
-        href = a.get('href')
-        if 'BAIXAR JPG' in text:
-            add(href)
-
-    # Também aceita imagens oficiais da própria página que tragam a referência no URL.
-    for tag in soup.find_all(['a', 'img']):
-        for attr in ('href', 'src', 'data-src', 'data-lazy-src'):
-            value = tag.get(attr)
-            if value and target in value and re.search(r'\.(?:jpe?g|png)(?:\?|$)', value, re.I):
-                add(value)
-
-    # Fallbacks estritamente no domínio oficial, para páginas antigas cujo botão não seja parseado.
     bases = [
         'https://homefinish.com.br/wp-content/uploads',
         'https://www.homefinish.com.br/wp-content/uploads',
@@ -104,21 +68,28 @@ def official_candidates(session, target):
         f'papel-parede-nacional-home-finish-bio-habitat-{target}',
         f'papel-parede-nacional-homefinish-bio-habitat-{target}',
     ]
-    suffixes = ['.jpg', '-1.jpg', '-2.jpg', '-sem-marca.jpg', '-sem-marca-1.jpg', '.png']
+    suffixes = ['.jpg', '-1.jpg', '-2.jpg', '-sem-marca.jpg', '-sem-marca-1.jpg', '_1.jpg', '_2.jpg', '.png']
     for base in bases:
         for month in months:
             for stem in stems:
                 for suffix in suffixes:
-                    add(f'{base}/{month}/{stem}{suffix}')
-    return page_url, out
+                    out.append(f'{base}/{month}/{stem}{suffix}')
+    return out
 
 
 def download_official(session, target):
-    page_url, candidates = official_candidates(session, target)
     errors = []
-    for url in candidates:
+    for url in candidates(target):
         try:
-            r = session.get(url, timeout=60)
+            r = session.get(
+                url,
+                timeout=60,
+                headers={
+                    'User-Agent': UA,
+                    'Referer': 'https://homefinish.com.br/',
+                    'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+                },
+            )
             if r.status_code != 200:
                 errors.append(f'{r.status_code}:{url}')
                 continue
@@ -132,10 +103,10 @@ def download_official(session, target):
             if min(im.size) < 700:
                 errors.append(f'too-small-image:{im.size}:{url}')
                 continue
-            return page_url, url, raw, im
+            return url, raw, im
         except Exception as exc:
             errors.append(f'{type(exc).__name__}:{url}')
-    raise RuntimeError(f'official-jpg-not-found:{target}:' + ' | '.join(errors[-8:]))
+    raise RuntimeError(f'official-jpg-not-found:{target}:' + ' | '.join(errors[-10:]))
 
 
 def save_pair(raw, im, rec):
@@ -148,13 +119,8 @@ def save_pair(raw, im, rec):
     op = od / f'{ref}.jpg'
     tp = td / f'{ref}.jpg'
 
-    # Preserva o arquivo oficial quando ele já for JPEG. Caso contrário converte para JPEG.
-    try:
-        probe = Image.open(io.BytesIO(raw))
-        fmt = (probe.format or '').upper()
-    except Exception:
-        fmt = ''
-    if fmt in {'JPEG', 'JPG'}:
+    probe = Image.open(io.BytesIO(raw))
+    if (probe.format or '').upper() in {'JPEG', 'JPG'}:
         op.write_bytes(raw)
     else:
         im.save(op, 'JPEG', quality=95, optimize=True, progressive=True)
@@ -165,11 +131,11 @@ def save_pair(raw, im, rec):
     return op, tp
 
 
-def patch_item(rec, raw, im, page_url, source_url):
+def patch_item(rec, raw, im, source_url):
     op, tp = save_pair(raw, im, rec)
     return {
         **rec,
-        'source_page': page_url,
+        'source_page': f'https://homefinish.com.br/papel-de-parede/{norm(rec["r"])}/',
         'source_resolved': source_url,
         'original': str(op.relative_to(ROOT)),
         'thumbnail': str(tp.relative_to(ROOT)),
@@ -183,54 +149,39 @@ def patch_item(rec, raw, im, page_url, source_url):
 
 def main():
     records = load_home_finish_records()
-    missing_records = [t for t in TARGETS if t not in records]
-    if missing_records:
-        raise RuntimeError('records-not-found:' + ','.join(missing_records))
-
-    wrong_collection = [t for t in TARGETS if records[t].get('c') != 'BIO Habitat']
-    if wrong_collection:
-        raise RuntimeError('wrong-collection:' + ','.join(wrong_collection))
+    missing = [t for t in TARGETS if t not in records]
+    if missing:
+        raise RuntimeError('records-not-found:' + ','.join(missing))
+    wrong = [t for t in TARGETS if records[t].get('c') != 'BIO Habitat']
+    if wrong:
+        raise RuntimeError('wrong-collection:' + ','.join(wrong))
 
     manifest = json.loads(MANIFEST.read_text(encoding='utf-8')) if MANIFEST.exists() else {'items': [], 'failures': []}
     items = manifest.get('items', [])
     failures = manifest.get('failures', [])
     by_key = {(x.get('f'), x.get('c'), str(x.get('r'))): x for x in items}
     successes = set()
-
     session = requests.Session()
-    session.headers.update({'User-Agent': UA, 'Accept': 'text/html,application/xhtml+xml,image/avif,image/webp,image/*,*/*;q=0.8'})
 
     for target in TARGETS:
         rec = records[target]
-        page_url, source_url, raw, im = download_official(session, target)
-        by_key[(rec['f'], rec['c'], str(rec['r']))] = patch_item(rec, raw, im, page_url, source_url)
+        source_url, raw, im = download_official(session, target)
+        by_key[(rec['f'], rec['c'], str(rec['r']))] = patch_item(rec, raw, im, source_url)
         successes.add(target)
-        print(
-            f'PATCH READY Home Finish {rec["r"]} {im.width}x{im.height} '
-            f'bytes={len(raw)} source={source_url}',
-            flush=True,
-        )
+        print(f'PATCH READY {rec["r"]} {im.width}x{im.height} bytes={len(raw)} source={source_url}', flush=True)
 
     if successes != set(TARGETS):
         raise RuntimeError(f'patch-incomplete:{len(successes)}/{len(TARGETS)}')
 
     new_items = list(by_key.values())
-    new_failures = [
-        x for x in failures
-        if not (x.get('f') == 'Home Finish' and norm(x.get('r')) in successes)
-    ]
+    new_failures = [x for x in failures if not (x.get('f') == 'Home Finish' and norm(x.get('r')) in successes)]
     new_items.sort(key=lambda x: (x.get('f', ''), x.get('c', ''), str(x.get('r', ''))))
     new_failures.sort(key=lambda x: (x.get('f', ''), x.get('c', ''), str(x.get('r', ''))))
-
     MANIFEST.write_text(
-        json.dumps(
-            {'ready': len(new_items), 'failed': len(new_failures), 'items': new_items, 'failures': new_failures},
-            ensure_ascii=False,
-            indent=2,
-        ),
+        json.dumps({'ready': len(new_items), 'failed': len(new_failures), 'items': new_items, 'failures': new_failures}, ensure_ascii=False, indent=2),
         encoding='utf-8',
     )
-    print('PATCH SUMMARY ' + ','.join(TARGETS) + f' success={len(successes)}/{len(TARGETS)}', flush=True)
+    print('PATCH SUMMARY success=28/28', flush=True)
 
 
 if __name__ == '__main__':
