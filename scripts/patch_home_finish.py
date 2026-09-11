@@ -23,8 +23,6 @@ TARGETS = [
     '101026', '101025', '101018', '101040', '101039', '101045', '101046',
 ]
 
-UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/152 Safari/537.36'
-
 
 def norm(ref):
     return re.sub(r'^(?:BH|MI)', '', str(ref).strip(), flags=re.I)
@@ -58,79 +56,28 @@ def load_home_finish_records():
     return by_norm
 
 
-def candidates(target):
-    # O primeiro candidato é exatamente o hotlink oficial já validado no catálogo.
-    out = [f'https://homefinish.com.br/wp-content/uploads/2023/08/papel-parede-nacional-home-finish-bio-habitat-{target}.jpg']
-    bases = ['https://homefinish.com.br/wp-content/uploads', 'https://www.homefinish.com.br/wp-content/uploads']
-    months = ['2023/08', '2024/04', '2024/09', '2025/01', '2025/04']
-    stems = [
-        f'papel-parede-nacional-home-finish-bio-habitat-{target}',
-        f'papel-parede-nacional-homefinish-bio-habitat-{target}',
-    ]
-    suffixes = ['.jpg', '-1.jpg', '-2.jpg', '-sem-marca.jpg', '-sem-marca-1.jpg', '_1.jpg', '_2.jpg', '.png']
-    for base in bases:
-        for month in months:
-            for stem in stems:
-                for suffix in suffixes:
-                    url = f'{base}/{month}/{stem}{suffix}'
-                    if url not in out:
-                        out.append(url)
-    return out
+def official_url(target):
+    return f'https://homefinish.com.br/wp-content/uploads/2023/08/papel-parede-nacional-home-finish-bio-habitat-{target}.jpg'
 
 
-def image_ok(raw):
-    if len(raw) < 20_000:
-        return None
-    try:
-        im = Image.open(io.BytesIO(raw))
-        im.load()
-        im = im.convert('RGB')
-    except Exception:
-        return None
-    if min(im.size) < 700:
-        return None
-    return im
-
-
-def proxy_url(source_url):
-    # images.weserv.nl apenas transporta a imagem quando a Home Finish bloqueia o IP do runner.
-    # O source_resolved gravado no manifest continua sendo o JPG oficial da Home Finish.
+def transport_url(source_url):
     return 'https://images.weserv.nl/?url=' + quote(source_url, safe='') + '&output=jpg&q=100'
 
 
-def download_official(session, target):
-    errors = []
-    for source_url in candidates(target):
-        # 1) tentativa direta na origem oficial
-        try:
-            r = session.get(
-                source_url,
-                timeout=45,
-                headers={'User-Agent': UA, 'Referer': 'https://homefinish.com.br/', 'Accept': 'image/*,*/*;q=0.8'},
-            )
-            if r.status_code == 200:
-                im = image_ok(r.content)
-                if im is not None:
-                    return source_url, source_url, r.content, im
-            else:
-                errors.append(f'direct-{r.status_code}:{source_url}')
-        except Exception as exc:
-            errors.append(f'direct-{type(exc).__name__}:{source_url}')
-
-        # 2) mesma origem oficial via proxy de imagem, para contornar bloqueio de IP do runner
-        try:
-            transport = proxy_url(source_url)
-            r = session.get(transport, timeout=60, headers={'User-Agent': UA, 'Accept': 'image/*,*/*;q=0.8'})
-            if r.status_code == 200:
-                im = image_ok(r.content)
-                if im is not None:
-                    return source_url, transport, r.content, im
-            else:
-                errors.append(f'proxy-{r.status_code}:{source_url}')
-        except Exception as exc:
-            errors.append(f'proxy-{type(exc).__name__}:{source_url}')
-
-    raise RuntimeError(f'official-jpg-not-found:{target}:' + ' | '.join(errors[-12:]))
+def download_image(session, target):
+    source = official_url(target)
+    transport = transport_url(source)
+    r = session.get(transport, timeout=30, headers={'Accept': 'image/*,*/*;q=0.8'})
+    if r.status_code != 200:
+        raise RuntimeError(f'proxy-http-{r.status_code}:{target}:{transport}')
+    if len(r.content) < 20_000:
+        raise RuntimeError(f'proxy-small:{target}:{len(r.content)}')
+    im = Image.open(io.BytesIO(r.content))
+    im.load()
+    im = im.convert('RGB')
+    if min(im.size) < 700:
+        raise RuntimeError(f'proxy-small-image:{target}:{im.size}')
+    return source, transport, r.content, im
 
 
 def save_pair(raw, im, rec):
@@ -142,34 +89,27 @@ def save_pair(raw, im, rec):
     td.mkdir(parents=True, exist_ok=True)
     op = od / f'{ref}.jpg'
     tp = td / f'{ref}.jpg'
-
-    # O transporte por proxy pode recomprimir; salvamos bytes recebidos quando JPEG.
-    probe = Image.open(io.BytesIO(raw))
-    if (probe.format or '').upper() in {'JPEG', 'JPG'}:
-        op.write_bytes(raw)
-    else:
-        im.save(op, 'JPEG', quality=95, optimize=True, progressive=True)
-
+    op.write_bytes(raw)
     ImageOps.fit(im, (520, 520), method=Image.Resampling.LANCZOS, centering=(0.5, 0.5)).save(
         tp, 'JPEG', quality=86, optimize=True, progressive=True
     )
     return op, tp
 
 
-def patch_item(rec, raw, im, source_url, transport_url):
+def patch_item(rec, raw, im, source, transport):
     op, tp = save_pair(raw, im, rec)
     return {
         **rec,
         'source_page': f'https://homefinish.com.br/papel-de-parede/{norm(rec["r"])}/',
-        'source_resolved': source_url,
-        'transport_url': transport_url,
+        'source_resolved': source,
+        'transport_url': transport,
         'original': str(op.relative_to(ROOT)),
         'thumbnail': str(tp.relative_to(ROOT)),
         'width': im.width,
         'height': im.height,
         'status': 'ready',
         'patched': True,
-        'patch_type': 'official-home-finish-download',
+        'patch_type': 'official-home-finish-via-image-transport',
     }
 
 
@@ -191,13 +131,13 @@ def main():
 
     for target in TARGETS:
         rec = records[target]
-        source_url, transport_url, raw, im = download_official(session, target)
-        by_key[(rec['f'], rec['c'], str(rec['r']))] = patch_item(rec, raw, im, source_url, transport_url)
+        source, transport, raw, im = download_image(session, target)
+        by_key[(rec['f'], rec['c'], str(rec['r']))] = patch_item(rec, raw, im, source, transport)
         successes.add(target)
-        print(f'PATCH READY {rec["r"]} {im.width}x{im.height} bytes={len(raw)} source={source_url}', flush=True)
+        print(f'PATCH READY {rec["r"]} {im.width}x{im.height} bytes={len(raw)} source={source}', flush=True)
 
-    if successes != set(TARGETS):
-        raise RuntimeError(f'patch-incomplete:{len(successes)}/{len(TARGETS)}')
+    if len(successes) != 28:
+        raise RuntimeError(f'patch-incomplete:{len(successes)}/28')
 
     new_items = list(by_key.values())
     new_failures = [x for x in failures if not (x.get('f') == 'Home Finish' and norm(x.get('r')) in successes)]
