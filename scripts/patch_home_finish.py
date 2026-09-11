@@ -6,6 +6,7 @@ import io
 import json
 import re
 from pathlib import Path
+from urllib.parse import quote
 
 import requests
 from PIL import Image, ImageOps
@@ -58,11 +59,9 @@ def load_home_finish_records():
 
 
 def candidates(target):
-    out = []
-    bases = [
-        'https://homefinish.com.br/wp-content/uploads',
-        'https://www.homefinish.com.br/wp-content/uploads',
-    ]
+    # O primeiro candidato é exatamente o hotlink oficial já validado no catálogo.
+    out = [f'https://homefinish.com.br/wp-content/uploads/2023/08/papel-parede-nacional-home-finish-bio-habitat-{target}.jpg']
+    bases = ['https://homefinish.com.br/wp-content/uploads', 'https://www.homefinish.com.br/wp-content/uploads']
     months = ['2023/08', '2024/04', '2024/09', '2025/01', '2025/04']
     stems = [
         f'papel-parede-nacional-home-finish-bio-habitat-{target}',
@@ -73,40 +72,65 @@ def candidates(target):
         for month in months:
             for stem in stems:
                 for suffix in suffixes:
-                    out.append(f'{base}/{month}/{stem}{suffix}')
+                    url = f'{base}/{month}/{stem}{suffix}'
+                    if url not in out:
+                        out.append(url)
     return out
+
+
+def image_ok(raw):
+    if len(raw) < 20_000:
+        return None
+    try:
+        im = Image.open(io.BytesIO(raw))
+        im.load()
+        im = im.convert('RGB')
+    except Exception:
+        return None
+    if min(im.size) < 700:
+        return None
+    return im
+
+
+def proxy_url(source_url):
+    # images.weserv.nl apenas transporta a imagem quando a Home Finish bloqueia o IP do runner.
+    # O source_resolved gravado no manifest continua sendo o JPG oficial da Home Finish.
+    return 'https://images.weserv.nl/?url=' + quote(source_url, safe='') + '&output=jpg&q=100'
 
 
 def download_official(session, target):
     errors = []
-    for url in candidates(target):
+    for source_url in candidates(target):
+        # 1) tentativa direta na origem oficial
         try:
             r = session.get(
-                url,
-                timeout=60,
-                headers={
-                    'User-Agent': UA,
-                    'Referer': 'https://homefinish.com.br/',
-                    'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
-                },
+                source_url,
+                timeout=45,
+                headers={'User-Agent': UA, 'Referer': 'https://homefinish.com.br/', 'Accept': 'image/*,*/*;q=0.8'},
             )
-            if r.status_code != 200:
-                errors.append(f'{r.status_code}:{url}')
-                continue
-            raw = r.content
-            if len(raw) < 20_000:
-                errors.append(f'too-small-bytes:{len(raw)}:{url}')
-                continue
-            im = Image.open(io.BytesIO(raw))
-            im.load()
-            im = im.convert('RGB')
-            if min(im.size) < 700:
-                errors.append(f'too-small-image:{im.size}:{url}')
-                continue
-            return url, raw, im
+            if r.status_code == 200:
+                im = image_ok(r.content)
+                if im is not None:
+                    return source_url, source_url, r.content, im
+            else:
+                errors.append(f'direct-{r.status_code}:{source_url}')
         except Exception as exc:
-            errors.append(f'{type(exc).__name__}:{url}')
-    raise RuntimeError(f'official-jpg-not-found:{target}:' + ' | '.join(errors[-10:]))
+            errors.append(f'direct-{type(exc).__name__}:{source_url}')
+
+        # 2) mesma origem oficial via proxy de imagem, para contornar bloqueio de IP do runner
+        try:
+            transport = proxy_url(source_url)
+            r = session.get(transport, timeout=60, headers={'User-Agent': UA, 'Accept': 'image/*,*/*;q=0.8'})
+            if r.status_code == 200:
+                im = image_ok(r.content)
+                if im is not None:
+                    return source_url, transport, r.content, im
+            else:
+                errors.append(f'proxy-{r.status_code}:{source_url}')
+        except Exception as exc:
+            errors.append(f'proxy-{type(exc).__name__}:{source_url}')
+
+    raise RuntimeError(f'official-jpg-not-found:{target}:' + ' | '.join(errors[-12:]))
 
 
 def save_pair(raw, im, rec):
@@ -119,6 +143,7 @@ def save_pair(raw, im, rec):
     op = od / f'{ref}.jpg'
     tp = td / f'{ref}.jpg'
 
+    # O transporte por proxy pode recomprimir; salvamos bytes recebidos quando JPEG.
     probe = Image.open(io.BytesIO(raw))
     if (probe.format or '').upper() in {'JPEG', 'JPG'}:
         op.write_bytes(raw)
@@ -131,12 +156,13 @@ def save_pair(raw, im, rec):
     return op, tp
 
 
-def patch_item(rec, raw, im, source_url):
+def patch_item(rec, raw, im, source_url, transport_url):
     op, tp = save_pair(raw, im, rec)
     return {
         **rec,
         'source_page': f'https://homefinish.com.br/papel-de-parede/{norm(rec["r"])}/',
         'source_resolved': source_url,
+        'transport_url': transport_url,
         'original': str(op.relative_to(ROOT)),
         'thumbnail': str(tp.relative_to(ROOT)),
         'width': im.width,
@@ -165,8 +191,8 @@ def main():
 
     for target in TARGETS:
         rec = records[target]
-        source_url, raw, im = download_official(session, target)
-        by_key[(rec['f'], rec['c'], str(rec['r']))] = patch_item(rec, raw, im, source_url)
+        source_url, transport_url, raw, im = download_official(session, target)
+        by_key[(rec['f'], rec['c'], str(rec['r']))] = patch_item(rec, raw, im, source_url, transport_url)
         successes.add(target)
         print(f'PATCH READY {rec["r"]} {im.width}x{im.height} bytes={len(raw)} source={source_url}', flush=True)
 
