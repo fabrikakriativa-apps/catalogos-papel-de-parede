@@ -60,24 +60,48 @@ def official_url(target):
     return f'https://homefinish.com.br/wp-content/uploads/2023/08/papel-parede-nacional-home-finish-bio-habitat-{target}.jpg'
 
 
-def transport_url(source_url):
-    return 'https://images.weserv.nl/?url=' + quote(source_url, safe='') + '&output=jpg&q=100'
+def transport_urls(source_url):
+    # A origem registrada continua sendo a Home Finish. Os endpoints abaixo são apenas transporte
+    # para contornar o 403 aplicado aos IPs do GitHub Actions.
+    encoded = quote(source_url, safe='')
+    return [
+        f'https://res.cloudinary.com/demo/image/fetch/{source_url}',
+        f'https://res.cloudinary.com/demo/image/fetch/{encoded}',
+        f'https://images.weserv.nl/?url={encoded}&output=jpg&q=100',
+    ]
+
+
+def image_from_bytes(raw):
+    if len(raw) < 20_000:
+        return None
+    try:
+        im = Image.open(io.BytesIO(raw))
+        im.load()
+        im = im.convert('RGB')
+    except Exception:
+        return None
+    if min(im.size) < 700:
+        return None
+    return im
 
 
 def download_image(session, target):
     source = official_url(target)
-    transport = transport_url(source)
-    r = session.get(transport, timeout=30, headers={'Accept': 'image/*,*/*;q=0.8'})
-    if r.status_code != 200:
-        raise RuntimeError(f'proxy-http-{r.status_code}:{target}:{transport}')
-    if len(r.content) < 20_000:
-        raise RuntimeError(f'proxy-small:{target}:{len(r.content)}')
-    im = Image.open(io.BytesIO(r.content))
-    im.load()
-    im = im.convert('RGB')
-    if min(im.size) < 700:
-        raise RuntimeError(f'proxy-small-image:{target}:{im.size}')
-    return source, transport, r.content, im
+    errors = []
+    for transport in transport_urls(source):
+        try:
+            r = session.get(transport, timeout=45, headers={'Accept': 'image/*,*/*;q=0.8'})
+            if r.status_code != 200:
+                errors.append(f'{r.status_code}:{transport}')
+                continue
+            im = image_from_bytes(r.content)
+            if im is None:
+                errors.append(f'invalid-image:{len(r.content)}:{transport}')
+                continue
+            return source, transport, r.content, im
+        except Exception as exc:
+            errors.append(f'{type(exc).__name__}:{transport}')
+    raise RuntimeError(f'proxy-failed:{target}:' + ' | '.join(errors))
 
 
 def save_pair(raw, im, rec):
@@ -89,7 +113,15 @@ def save_pair(raw, im, rec):
     td.mkdir(parents=True, exist_ok=True)
     op = od / f'{ref}.jpg'
     tp = td / f'{ref}.jpg'
-    op.write_bytes(raw)
+    try:
+        probe = Image.open(io.BytesIO(raw))
+        fmt = (probe.format or '').upper()
+    except Exception:
+        fmt = ''
+    if fmt in {'JPEG', 'JPG'}:
+        op.write_bytes(raw)
+    else:
+        im.save(op, 'JPEG', quality=95, optimize=True, progressive=True)
     ImageOps.fit(im, (520, 520), method=Image.Resampling.LANCZOS, centering=(0.5, 0.5)).save(
         tp, 'JPEG', quality=86, optimize=True, progressive=True
     )
@@ -134,7 +166,7 @@ def main():
         source, transport, raw, im = download_image(session, target)
         by_key[(rec['f'], rec['c'], str(rec['r']))] = patch_item(rec, raw, im, source, transport)
         successes.add(target)
-        print(f'PATCH READY {rec["r"]} {im.width}x{im.height} bytes={len(raw)} source={source}', flush=True)
+        print(f'PATCH READY {rec["r"]} {im.width}x{im.height} bytes={len(raw)} source={source} via={transport}', flush=True)
 
     if len(successes) != 28:
         raise RuntimeError(f'patch-incomplete:{len(successes)}/28')
