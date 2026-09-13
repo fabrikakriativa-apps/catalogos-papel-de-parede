@@ -6,7 +6,7 @@ import io
 import json
 import re
 from pathlib import Path
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 
 import requests
 from PIL import Image, ImageOps
@@ -61,12 +61,18 @@ def official_url(target):
 
 
 def transport_urls(source_url):
-    # A origem registrada continua sendo a Home Finish. Os endpoints abaixo são apenas transporte
-    # para contornar o 403 aplicado aos IPs do GitHub Actions.
     encoded = quote(source_url, safe='')
+    parsed = urlparse(source_url)
+    wp_path = parsed.netloc + parsed.path
     return [
+        # WordPress/Jetpack image CDN variants
+        f'https://i0.wp.com/{wp_path}',
+        f'https://i1.wp.com/{wp_path}',
+        f'https://i2.wp.com/{wp_path}',
+        # DuckDuckGo external image proxy
+        f'https://external-content.duckduckgo.com/iu/?u={encoded}&f=1&nofb=1',
+        # Other public image transports retained as fallback
         f'https://res.cloudinary.com/demo/image/fetch/{source_url}',
-        f'https://res.cloudinary.com/demo/image/fetch/{encoded}',
         f'https://images.weserv.nl/?url={encoded}&output=jpg&q=100',
     ]
 
@@ -90,7 +96,10 @@ def download_image(session, target):
     errors = []
     for transport in transport_urls(source):
         try:
-            r = session.get(transport, timeout=45, headers={'Accept': 'image/*,*/*;q=0.8'})
+            r = session.get(transport, timeout=45, headers={
+                'Accept': 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/152 Safari/537.36',
+            })
             if r.status_code != 200:
                 errors.append(f'{r.status_code}:{transport}')
                 continue
