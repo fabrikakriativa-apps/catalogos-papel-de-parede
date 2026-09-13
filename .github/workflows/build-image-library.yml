@@ -9,6 +9,7 @@ on:
       - 'scripts/build_library_v2.py'
       - 'scripts/build_wiler.py'
       - 'scripts/patch_home_finish.py'
+      - 'scripts/import_bio_pdf_images.py'
       - 'staging/**'
       - '.github/workflows/build-image-library.yml'
   issues:
@@ -32,8 +33,52 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
+  import_bio_pdf:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[HF PDF IMPORT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pillow
+
+      - name: Expand BIO Habitat PDF image chunks
+        run: |
+          shopt -s nullglob
+          archives=(staging/bio-habitat-pdf-*.zip)
+          if [ ${#archives[@]} -eq 0 ]; then
+            echo "No BIO Habitat PDF import archives found"
+            exit 1
+          fi
+          for archive in "${archives[@]}"; do
+            echo "Expanding $archive"
+            unzip -o "$archive" -d .
+          done
+
+      - name: Build BIO Habitat thumbnails and patch manifest
+        run: python scripts/import_bio_pdf_images.py
+
+      - name: Commit BIO Habitat PDF import
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f staging/bio-habitat-pdf-*.zip
+          git add -A imagens/home-finish/bio-habitat
+          git add -A dados/biblioteca-imagens.json
+          git add -A staging
+          if git diff --cached --quiet; then
+            echo "No BIO Habitat PDF import changes"
+          else
+            git commit -m "[KANTAI EXPORT] Import BIO Habitat images from official PDF"
+            git push
+          fi
+
   build:
-    if: github.event_name == 'push' && !contains(github.event.head_commit.message, '[KANTAI EXPORT]')
+    if: github.event_name == 'push' && !contains(github.event.head_commit.message, '[KANTAI EXPORT]') && !contains(github.event.head_commit.message, '[HF PDF IMPORT]')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -45,7 +90,6 @@ jobs:
           python-version: '3.12'
       - run: pip install pillow requests beautifulsoup4
 
-      # patch-run-v2: usa URLs diretas e preserva todo o restante da biblioteca
       - name: Patch only Home Finish problem images
         if: contains(github.event.head_commit.message, '[HF PATCH]')
         run: python scripts/patch_home_finish.py
