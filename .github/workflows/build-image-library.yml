@@ -104,7 +104,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No Home Finish patch changes"
           else
-            git commit -m "Patch Home Finish problem images"
+            git commit -m "[KANTAI EXPORT] Patch Home Finish problem images"
             git push
           fi
 
