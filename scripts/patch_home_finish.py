@@ -147,8 +147,6 @@ def image_from_bytes(raw):
     except Exception:
         return None
     w, h = im.size
-    # Alguns arquivos oficiais da BIO Habitat são mais estreitos; preservar a arte oficial
-    # é mais importante do que impor uma dimensão mínima quadrada arbitrária.
     if w < 500 or h < 500 or (w * h) < 350_000:
         return None
     return im
@@ -189,7 +187,6 @@ def download_image(session, target):
                 return source, transport, r.content, im
             except Exception as exc:
                 errors.append(f'{type(exc).__name__}:{transport}')
-        # evita varrer dezenas de variantes quando a URL-base já existe mas o transporte falhou
         if len(errors) > 36:
             break
     raise RuntimeError(f'not-resolved:{target}:' + ' | '.join(errors[-12:]))
@@ -299,9 +296,9 @@ def main():
     print(f'PATCH SUMMARY success={len(successes)}/28 unresolved={len(unresolved)}', flush=True)
     if unresolved:
         print('PATCH REMAINING ' + ','.join(unresolved), flush=True)
-    # Saída 0 intencional: o workflow deve persistir cada imagem resolvida e permitir
-    # nova rodada apenas para o que restar, em vez de perder o progresso inteiro.
 
 
 if __name__ == '__main__':
     main()
+
+# artifact-refresh 2026-09-15
