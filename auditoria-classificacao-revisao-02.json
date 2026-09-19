@@ -1,0 +1,993 @@
+{
+  "versao": "revisao-classificacao-02",
+  "total_itens": 1266,
+  "alteracoes_aplicadas": [
+    {
+      "ref": "TX-2014",
+      "campo": "cor",
+      "antes": [
+        "Cinza"
+      ],
+      "depois": [
+        "Bege/Areia"
+      ],
+      "regra": "remover Cinza; incluir Bege/Areia"
+    },
+    {
+      "ref": "TX-2015",
+      "campo": "cor",
+      "antes": [
+        "Cinza"
+      ],
+      "depois": [
+        "Bege/Areia"
+      ],
+      "regra": "remover Cinza; incluir Bege/Areia"
+    },
+    {
+      "ref": "TX-2019",
+      "campo": "cor",
+      "antes": [
+        "Cinza"
+      ],
+      "depois": [
+        "Bege/Areia"
+      ],
+      "regra": "remover Cinza; incluir Bege/Areia"
+    },
+    {
+      "ref": "TX-2020",
+      "campo": "cor",
+      "antes": [
+        "Cinza"
+      ],
+      "depois": [
+        "Bege/Areia"
+      ],
+      "regra": "remover Cinza; incluir Bege/Areia"
+    },
+    {
+      "ref": "TX-2022",
+      "campo": "cor",
+      "antes": [
+        "Greige",
+        "Cinza"
+      ],
+      "depois": [
+        "Greige",
+        "Bege/Areia"
+      ],
+      "regra": "remover Cinza; incluir Bege/Areia"
+    },
+    {
+      "ref": "TX-2034",
+      "campo": "cor",
+      "antes": [
+        "Cinza",
+        "Branco/Off-white"
+      ],
+      "depois": [
+        "Branco/Off-white",
+        "Bege/Areia"
+      ],
+      "regra": "remover Cinza; incluir Bege/Areia"
+    },
+    {
+      "ref": "TX-2041",
+      "campo": "cor",
+      "antes": [
+        "Cinza",
+        "Branco/Off-white"
+      ],
+      "depois": [
+        "Branco/Off-white",
+        "Bege/Areia"
+      ],
+      "regra": "remover Cinza; incluir Bege/Areia"
+    },
+    {
+      "ref": "TX-2043",
+      "campo": "cor",
+      "antes": [
+        "Cinza"
+      ],
+      "depois": [
+        "Bege/Areia"
+      ],
+      "regra": "remover Cinza; incluir Bege/Areia"
+    },
+    {
+      "ref": "TX-2045",
+      "campo": "cor",
+      "antes": [
+        "Cinza"
+      ],
+      "depois": [
+        "Bege/Areia"
+      ],
+      "regra": "remover Cinza; incluir Bege/Areia"
+    },
+    {
+      "ref": "TX-2046",
+      "campo": "cor",
+      "antes": [
+        "Cinza",
+        "Branco/Off-white"
+      ],
+      "depois": [
+        "Branco/Off-white",
+        "Bege/Areia"
+      ],
+      "regra": "remover Cinza; incluir Bege/Areia"
+    },
+    {
+      "ref": "TX-2049",
+      "campo": "cor",
+      "antes": [
+        "Cinza",
+        "Branco/Off-white"
+      ],
+      "depois": [
+        "Branco/Off-white",
+        "Bege/Areia"
+      ],
+      "regra": "remover Cinza; incluir Bege/Areia"
+    },
+    {
+      "ref": "TX-2032",
+      "campo": "cor",
+      "antes": [
+        "Marrom",
+        "Cinza"
+      ],
+      "depois": [
+        "Marrom"
+      ],
+      "regra": "remover Cinza; incluir Marrom"
+    },
+    {
+      "ref": "TX-2033",
+      "campo": "cor",
+      "antes": [
+        "Cinza",
+        "Preto"
+      ],
+      "depois": [
+        "Preto",
+        "Marrom"
+      ],
+      "regra": "remover Cinza; incluir Marrom"
+    },
+    {
+      "ref": "TX-2035",
+      "campo": "cor",
+      "antes": [
+        "Cinza",
+        "Branco/Off-white"
+      ],
+      "depois": [
+        "Branco/Off-white",
+        "Marrom"
+      ],
+      "regra": "remover Cinza; incluir Marrom"
+    },
+    {
+      "ref": "TX-2036",
+      "campo": "cor",
+      "antes": [
+        "Cinza"
+      ],
+      "depois": [
+        "Marrom"
+      ],
+      "regra": "remover Cinza; incluir Marrom"
+    },
+    {
+      "ref": "TX-2037",
+      "campo": "cor",
+      "antes": [
+        "Greige",
+        "Cinza"
+      ],
+      "depois": [
+        "Greige",
+        "Marrom"
+      ],
+      "regra": "remover Cinza; incluir Marrom"
+    },
+    {
+      "ref": "TX-2047",
+      "campo": "cor",
+      "antes": [
+        "Cinza"
+      ],
+      "depois": [
+        "Marrom"
+      ],
+      "regra": "remover Cinza; incluir Marrom"
+    },
+    {
+      "ref": "TX-2050",
+      "campo": "cor",
+      "antes": [
+        "Cinza"
+      ],
+      "depois": [
+        "Marrom"
+      ],
+      "regra": "remover Cinza; incluir Marrom"
+    },
+    {
+      "ref": "TX-2051",
+      "campo": "cor",
+      "antes": [
+        "Cinza"
+      ],
+      "depois": [
+        "Marrom"
+      ],
+      "regra": "remover Cinza; incluir Marrom"
+    },
+    {
+      "ref": "TR-4035",
+      "campo": "cor",
+      "antes": [
+        "Rosa",
+        "Cinza"
+      ],
+      "depois": [
+        "Rosa",
+        "Marrom"
+      ],
+      "regra": "remover Cinza; incluir Marrom"
+    },
+    {
+      "ref": "AD300001R",
+      "campo": "cor",
+      "antes": [
+        "Branco/Off-white",
+        "Greige"
+      ],
+      "depois": [
+        "Branco/Off-white"
+      ],
+      "regra": "remover Greige; incluir Branco/Off-white"
+    },
+    {
+      "ref": "PT500804",
+      "campo": "cor",
+      "antes": [
+        "Cinza",
+        "Greige"
+      ],
+      "depois": [
+        "Cinza",
+        "Branco/Off-white"
+      ],
+      "regra": "remover Greige; incluir Branco/Off-white"
+    },
+    {
+      "ref": "CR333714R",
+      "campo": "cor",
+      "antes": [
+        "Greige"
+      ],
+      "depois": [
+        "Branco/Off-white"
+      ],
+      "regra": "remover Greige; incluir Branco/Off-white"
+    },
+    {
+      "ref": "AD300003R",
+      "campo": "cor",
+      "antes": [
+        "Greige"
+      ],
+      "depois": [
+        "Bege/Areia"
+      ],
+      "regra": "remover Greige; incluir Bege/Areia"
+    },
+    {
+      "ref": "PT500801",
+      "campo": "cor",
+      "antes": [
+        "Branco/Off-white",
+        "Greige"
+      ],
+      "depois": [
+        "Branco/Off-white",
+        "Bege/Areia"
+      ],
+      "regra": "remover Greige; incluir Bege/Areia"
+    },
+    {
+      "ref": "PT500802",
+      "campo": "cor",
+      "antes": [
+        "Greige"
+      ],
+      "depois": [
+        "Bege/Areia"
+      ],
+      "regra": "remover Greige; incluir Bege/Areia"
+    },
+    {
+      "ref": "PT500703",
+      "campo": "cor",
+      "antes": [
+        "Greige",
+        "Cinza"
+      ],
+      "depois": [
+        "Cinza",
+        "Bege/Areia"
+      ],
+      "regra": "remover Greige; incluir Bege/Areia"
+    },
+    {
+      "ref": "CR333704R",
+      "campo": "cor",
+      "antes": [
+        "Branco/Off-white",
+        "Greige"
+      ],
+      "depois": [
+        "Branco/Off-white",
+        "Bege/Areia"
+      ],
+      "regra": "remover Greige; incluir Bege/Areia"
+    },
+    {
+      "ref": "CR333713R",
+      "campo": "cor",
+      "antes": [
+        "Greige",
+        "Cinza"
+      ],
+      "depois": [
+        "Cinza",
+        "Bege/Areia"
+      ],
+      "regra": "remover Greige; incluir Bege/Areia"
+    },
+    {
+      "ref": "9S160102",
+      "campo": "cor",
+      "antes": [
+        "Branco/Off-white",
+        "Greige"
+      ],
+      "depois": [
+        "Branco/Off-white",
+        "Bege/Areia"
+      ],
+      "regra": "remover Greige; incluir Bege/Areia"
+    },
+    {
+      "ref": "AD300004R",
+      "campo": "cor",
+      "antes": [
+        "Greige",
+        "Cinza"
+      ],
+      "depois": [
+        "Cinza",
+        "Verde"
+      ],
+      "regra": "remover Greige; incluir Verde"
+    },
+    {
+      "ref": "PT501101",
+      "campo": "cor",
+      "antes": [
+        "Greige",
+        "Cinza"
+      ],
+      "depois": [
+        "Cinza"
+      ],
+      "regra": "remover Greige; incluir Cinza"
+    },
+    {
+      "ref": "89808",
+      "campo": "cor",
+      "antes": [
+        "Verde",
+        "Greige",
+        "Bege/Areia",
+        "Verde oliva"
+      ],
+      "depois": [
+        "Verde",
+        "Bege/Areia",
+        "Verde oliva"
+      ],
+      "regra": "remover Greige; incluir Verde oliva"
+    },
+    {
+      "ref": "83752",
+      "campo": "cor",
+      "antes": [
+        "Rosa",
+        "Lilás",
+        "Multicolorido"
+      ],
+      "depois": [
+        "Rosa",
+        "Multicolorido"
+      ],
+      "regra": "remover Lilás; incluir Rosa"
+    },
+    {
+      "ref": "9S160503",
+      "campo": "cor",
+      "antes": [
+        "Bege/Areia",
+        "Marrom"
+      ],
+      "depois": [
+        "Bege/Areia"
+      ],
+      "regra": "remover Marrom; incluir Bege/Areia"
+    },
+    {
+      "ref": "9S160502",
+      "campo": "cor",
+      "antes": [
+        "Bege/Areia",
+        "Marrom"
+      ],
+      "depois": [
+        "Bege/Areia"
+      ],
+      "regra": "remover Marrom; incluir Bege/Areia"
+    },
+    {
+      "ref": "BH101010",
+      "campo": "cor",
+      "antes": [
+        "Azul",
+        "Marrom"
+      ],
+      "depois": [
+        "Azul",
+        "Marrom",
+        "Multicolorido"
+      ],
+      "regra": "incluir Multicolorido"
+    },
+    {
+      "ref": "BA0004",
+      "campo": "cor",
+      "antes": [
+        "Verde",
+        "Multicolorido",
+        "Terracota/Laranja"
+      ],
+      "depois": [
+        "Verde",
+        "Multicolorido"
+      ],
+      "regra": "remover Terracota/Laranja"
+    },
+    {
+      "ref": "BA0001",
+      "campo": "cor",
+      "antes": [
+        "Multicolorido",
+        "Terracota/Laranja",
+        "Cinza"
+      ],
+      "depois": [
+        "Multicolorido",
+        "Cinza"
+      ],
+      "regra": "remover Terracota/Laranja"
+    },
+    {
+      "ref": "BDM-07",
+      "campo": "cor",
+      "antes": [
+        "Verde oliva"
+      ],
+      "depois": [
+        "Verde"
+      ],
+      "regra": "remover Verde oliva; incluir Verde"
+    },
+    {
+      "ref": "BDM-08",
+      "campo": "cor",
+      "antes": [
+        "Verde oliva"
+      ],
+      "depois": [
+        "Verde"
+      ],
+      "regra": "remover Verde oliva; incluir Verde"
+    },
+    {
+      "ref": "BDM-13",
+      "campo": "cor",
+      "antes": [
+        "Verde oliva"
+      ],
+      "depois": [
+        "Verde"
+      ],
+      "regra": "remover Verde oliva; incluir Verde"
+    },
+    {
+      "ref": "BDM-14",
+      "campo": "cor",
+      "antes": [
+        "Verde oliva"
+      ],
+      "depois": [
+        "Verde"
+      ],
+      "regra": "remover Verde oliva; incluir Verde"
+    },
+    {
+      "ref": "BDM-23",
+      "campo": "cor",
+      "antes": [
+        "Verde oliva"
+      ],
+      "depois": [
+        "Verde"
+      ],
+      "regra": "remover Verde oliva; incluir Verde"
+    },
+    {
+      "ref": "BDM-39",
+      "campo": "cor",
+      "antes": [
+        "Verde oliva"
+      ],
+      "depois": [
+        "Verde"
+      ],
+      "regra": "remover Verde oliva; incluir Verde"
+    },
+    {
+      "ref": "BDM-40",
+      "campo": "cor",
+      "antes": [
+        "Verde oliva"
+      ],
+      "depois": [
+        "Verde"
+      ],
+      "regra": "remover Verde oliva; incluir Verde"
+    },
+    {
+      "ref": "BDM-41",
+      "campo": "cor",
+      "antes": [
+        "Verde oliva"
+      ],
+      "depois": [
+        "Verde"
+      ],
+      "regra": "remover Verde oliva; incluir Verde"
+    },
+    {
+      "ref": "BDM-50",
+      "campo": "cor",
+      "antes": [
+        "Verde oliva"
+      ],
+      "depois": [
+        "Verde"
+      ],
+      "regra": "remover Verde oliva; incluir Verde"
+    },
+    {
+      "ref": "BDM-51",
+      "campo": "cor",
+      "antes": [
+        "Verde oliva"
+      ],
+      "depois": [
+        "Verde"
+      ],
+      "regra": "remover Verde oliva; incluir Verde"
+    },
+    {
+      "ref": "BDM-54",
+      "campo": "cor",
+      "antes": [
+        "Verde oliva"
+      ],
+      "depois": [
+        "Verde"
+      ],
+      "regra": "remover Verde oliva; incluir Verde"
+    },
+    {
+      "ref": "BDM-55",
+      "campo": "cor",
+      "antes": [
+        "Verde oliva"
+      ],
+      "depois": [
+        "Verde"
+      ],
+      "regra": "remover Verde oliva; incluir Verde"
+    },
+    {
+      "ref": "TR-4058",
+      "campo": "cor",
+      "antes": [
+        "Verde",
+        "Verde oliva"
+      ],
+      "depois": [
+        "Verde"
+      ],
+      "regra": "remover Verde oliva; incluir Verde"
+    },
+    {
+      "ref": "BH101039",
+      "campo": "estilo",
+      "antes": [
+        "Temático",
+        "Abstrato"
+      ],
+      "depois": [
+        "Temático",
+        "Botânico/Folhagem"
+      ],
+      "regra": "remover Abstrato; incluir Botânico/Folhagem"
+    },
+    {
+      "ref": "BH101016",
+      "campo": "estilo",
+      "antes": [
+        "Botânico/Folhagem",
+        "Abstrato"
+      ],
+      "depois": [
+        "Botânico/Folhagem"
+      ],
+      "regra": "remover Abstrato; incluir Botânico/Folhagem"
+    },
+    {
+      "ref": "AD300704R",
+      "campo": "estilo",
+      "antes": [
+        "Textura",
+        "Abstrato"
+      ],
+      "depois": [
+        "Textura"
+      ],
+      "regra": "remover Abstrato; incluir Textura"
+    },
+    {
+      "ref": "PT500805",
+      "campo": "estilo",
+      "antes": [
+        "Textura",
+        "Abstrato"
+      ],
+      "depois": [
+        "Textura"
+      ],
+      "regra": "remover Abstrato; incluir Textura"
+    },
+    {
+      "ref": "BA0038",
+      "campo": "estilo",
+      "antes": [
+        "Poá",
+        "Abstrato",
+        "Geométrico"
+      ],
+      "depois": [
+        "Poá",
+        "Geométrico"
+      ],
+      "regra": "remover Abstrato; incluir Poá"
+    },
+    {
+      "ref": "BA0040",
+      "campo": "estilo",
+      "antes": [
+        "Geométrico",
+        "Abstrato",
+        "Poá"
+      ],
+      "depois": [
+        "Geométrico",
+        "Poá"
+      ],
+      "regra": "remover Abstrato; incluir Poá"
+    },
+    {
+      "ref": "BA0046",
+      "campo": "estilo",
+      "antes": [
+        "Poá",
+        "Abstrato",
+        "Geométrico"
+      ],
+      "depois": [
+        "Poá",
+        "Geométrico"
+      ],
+      "regra": "remover Abstrato; incluir Poá"
+    },
+    {
+      "ref": "BDM-29",
+      "campo": "estilo",
+      "antes": [
+        "Abstrato",
+        "Clássico"
+      ],
+      "depois": [
+        "Clássico"
+      ],
+      "regra": "remover Abstrato; incluir Clássico"
+    },
+    {
+      "ref": "BDM-31",
+      "campo": "estilo",
+      "antes": [
+        "Abstrato",
+        "Clássico"
+      ],
+      "depois": [
+        "Clássico"
+      ],
+      "regra": "remover Abstrato; incluir Clássico"
+    },
+    {
+      "ref": "BDM-33",
+      "campo": "estilo",
+      "antes": [
+        "Abstrato",
+        "Clássico"
+      ],
+      "depois": [
+        "Clássico"
+      ],
+      "regra": "remover Abstrato; incluir Clássico"
+    },
+    {
+      "ref": "BDM-34",
+      "campo": "estilo",
+      "antes": [
+        "Abstrato",
+        "Clássico"
+      ],
+      "depois": [
+        "Clássico"
+      ],
+      "regra": "remover Abstrato; incluir Clássico"
+    },
+    {
+      "ref": "BDM-36",
+      "campo": "estilo",
+      "antes": [
+        "Abstrato",
+        "Clássico"
+      ],
+      "depois": [
+        "Clássico"
+      ],
+      "regra": "remover Abstrato; incluir Clássico"
+    },
+    {
+      "ref": "BDM-38",
+      "campo": "estilo",
+      "antes": [
+        "Abstrato",
+        "Clássico"
+      ],
+      "depois": [
+        "Clássico"
+      ],
+      "regra": "remover Abstrato; incluir Clássico"
+    },
+    {
+      "ref": "BDM-39",
+      "campo": "estilo",
+      "antes": [
+        "Abstrato",
+        "Clássico"
+      ],
+      "depois": [
+        "Clássico"
+      ],
+      "regra": "remover Abstrato; incluir Clássico"
+    },
+    {
+      "ref": "BDM-41",
+      "campo": "estilo",
+      "antes": [
+        "Abstrato",
+        "Clássico"
+      ],
+      "depois": [
+        "Clássico"
+      ],
+      "regra": "remover Abstrato; incluir Clássico"
+    },
+    {
+      "ref": "BDM-53",
+      "campo": "estilo",
+      "antes": [
+        "Abstrato",
+        "Clássico"
+      ],
+      "depois": [
+        "Clássico",
+        "Provençal"
+      ],
+      "regra": "remover Abstrato; incluir Provençal"
+    },
+    {
+      "ref": "BDM-55",
+      "campo": "estilo",
+      "antes": [
+        "Abstrato",
+        "Clássico"
+      ],
+      "depois": [
+        "Clássico",
+        "Provençal"
+      ],
+      "regra": "remover Abstrato; incluir Provençal"
+    },
+    {
+      "ref": "BDM-57",
+      "campo": "estilo",
+      "antes": [
+        "Abstrato",
+        "Clássico"
+      ],
+      "depois": [
+        "Clássico",
+        "Provençal"
+      ],
+      "regra": "remover Abstrato; incluir Provençal"
+    },
+    {
+      "ref": "BDM-59",
+      "campo": "estilo",
+      "antes": [
+        "Abstrato",
+        "Clássico"
+      ],
+      "depois": [
+        "Clássico",
+        "Provençal"
+      ],
+      "regra": "remover Abstrato; incluir Provençal"
+    },
+    {
+      "ref": "TAC-WKA76001",
+      "campo": "estilo",
+      "antes": [
+        "Geométrico",
+        "Abstrato"
+      ],
+      "depois": [
+        "Geométrico"
+      ],
+      "regra": "remover estilo Abstrato globalmente"
+    },
+    {
+      "ref": "TAC-WKA76002",
+      "campo": "estilo",
+      "antes": [
+        "Geométrico",
+        "Abstrato"
+      ],
+      "depois": [
+        "Geométrico"
+      ],
+      "regra": "remover estilo Abstrato globalmente"
+    },
+    {
+      "ref": "85916",
+      "campo": "estilo",
+      "antes": [
+        "Provençal",
+        "Geométrico",
+        "Floral",
+        "Clássico"
+      ],
+      "depois": [
+        "Provençal",
+        "Geométrico",
+        "Clássico"
+      ],
+      "regra": "remover Floral"
+    },
+    {
+      "ref": "602346",
+      "campo": "estilo",
+      "antes": [
+        "Listrado"
+      ],
+      "depois": [
+        "Xadrez"
+      ],
+      "regra": "remover Listrado; incluir Xadrez"
+    }
+  ],
+  "alteracoes_bloqueadas_por_categoria_vazia": [
+    {
+      "ref": "AD300111R",
+      "campo": "cor",
+      "regra": "remover Branco/Off-white",
+      "motivo": "remoção deixaria sem cor",
+      "estado": [
+        "Branco/Off-white"
+      ]
+    },
+    {
+      "ref": "84384",
+      "campo": "estilo",
+      "regra": "remover Liso",
+      "motivo": "remoção deixaria sem estilo",
+      "estado": [
+        "Liso"
+      ]
+    }
+  ],
+  "estilo_abstrato_restante": [],
+  "itens_sem_cor": [],
+  "itens_sem_estilo": [],
+  "filtros": {
+    "cores": [
+      "Amarelo/Dourado",
+      "Azul",
+      "Bege/Areia",
+      "Branco/Off-white",
+      "Cinza",
+      "Greige",
+      "Lavanda",
+      "Lilás",
+      "Marrom",
+      "Multicolorido",
+      "Preto",
+      "Pêssego",
+      "Rosa",
+      "Terracota/Laranja",
+      "Verde",
+      "Verde oliva",
+      "Vermelho/Bordô"
+    ],
+    "estilos": [
+      "Amadeirado",
+      "Animais",
+      "Borboletas",
+      "Botânico/Folhagem",
+      "Cachorros",
+      "Carrinhos",
+      "Cavalos",
+      "Clássico",
+      "Dinossauros",
+      "Estrelas",
+      "Floral",
+      "Fundo do mar",
+      "Gatos",
+      "Geométrico",
+      "Liso",
+      "Listrado",
+      "Paisagem",
+      "Poá",
+      "Provençal",
+      "Pássaros",
+      "Temático",
+      "Textura",
+      "Ursinhos",
+      "Xadrez"
+    ]
+  }
+}

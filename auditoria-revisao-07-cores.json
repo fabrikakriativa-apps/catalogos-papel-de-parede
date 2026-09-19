@@ -1,0 +1,69 @@
+{
+  "changes": [
+    {
+      "ref": "BH101010",
+      "before": [
+        "Azul",
+        "Marrom",
+        "Multicolorido"
+      ],
+      "after": [
+        "Azul",
+        "Multicolorido"
+      ]
+    },
+    {
+      "ref": "BH101011",
+      "before": [
+        "Multicolorido",
+        "Azul"
+      ],
+      "after": [
+        "Multicolorido"
+      ]
+    },
+    {
+      "ref": "81543",
+      "before": [
+        "Rosa",
+        "Terracota/Laranja",
+        "Vermelho/Bordô",
+        "Pêssego"
+      ],
+      "after": [
+        "Terracota/Laranja",
+        "Pêssego"
+      ]
+    },
+    {
+      "ref": "81567",
+      "before": [
+        "Terracota/Laranja",
+        "Rosa"
+      ],
+      "after": [
+        "Terracota/Laranja"
+      ]
+    }
+  ],
+  "total_items": 1266,
+  "color_filter": [
+    "Amarelo/Dourado",
+    "Azul",
+    "Bege/Areia",
+    "Branco/Off-white",
+    "Cinza",
+    "Greige",
+    "Lavanda",
+    "Lilás",
+    "Marrom",
+    "Multicolorido",
+    "Preto",
+    "Pêssego",
+    "Rosa",
+    "Terracota/Laranja",
+    "Verde",
+    "Verde oliva",
+    "Vermelho/Bordô"
+  ]
+}

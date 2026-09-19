@@ -1,0 +1,343 @@
+{
+  "total_items": 1266,
+  "changes": [
+    {
+      "ref": "AD300111R",
+      "field": "cor",
+      "old": [
+        "Branco/Off-white"
+      ],
+      "new": [
+        "Cinza"
+      ]
+    },
+    {
+      "ref": "84384",
+      "field": "estilo",
+      "old": [
+        "Liso"
+      ],
+      "new": [
+        "Floral"
+      ]
+    },
+    {
+      "ref": "PT500904",
+      "field": "estilo",
+      "old": [
+        "Floral",
+        "Botânico/Folhagem",
+        "Pássaros",
+        "Clássico"
+      ],
+      "new": [
+        "Floral",
+        "Pássaros",
+        "Clássico"
+      ]
+    },
+    {
+      "ref": "PT500903",
+      "field": "estilo",
+      "old": [
+        "Floral",
+        "Botânico/Folhagem",
+        "Pássaros",
+        "Clássico"
+      ],
+      "new": [
+        "Floral",
+        "Pássaros",
+        "Clássico"
+      ]
+    },
+    {
+      "ref": "PT500902",
+      "field": "estilo",
+      "old": [
+        "Botânico/Folhagem",
+        "Clássico",
+        "Floral",
+        "Pássaros"
+      ],
+      "new": [
+        "Clássico",
+        "Floral",
+        "Pássaros"
+      ]
+    },
+    {
+      "ref": "PT500901",
+      "field": "estilo",
+      "old": [
+        "Floral",
+        "Botânico/Folhagem",
+        "Pássaros",
+        "Clássico"
+      ],
+      "new": [
+        "Floral",
+        "Pássaros",
+        "Clássico"
+      ]
+    },
+    {
+      "ref": "BH101014",
+      "field": "estilo",
+      "old": [
+        "Floral",
+        "Botânico/Folhagem"
+      ],
+      "new": [
+        "Floral"
+      ]
+    },
+    {
+      "ref": "BH101011",
+      "field": "estilo",
+      "old": [
+        "Floral",
+        "Botânico/Folhagem",
+        "Clássico"
+      ],
+      "new": [
+        "Floral",
+        "Clássico"
+      ]
+    },
+    {
+      "ref": "BH101010",
+      "field": "estilo",
+      "old": [
+        "Floral",
+        "Botânico/Folhagem",
+        "Clássico"
+      ],
+      "new": [
+        "Floral",
+        "Clássico"
+      ]
+    },
+    {
+      "ref": "BH101026",
+      "field": "estilo",
+      "old": [
+        "Floral",
+        "Botânico/Folhagem",
+        "Clássico"
+      ],
+      "new": [
+        "Floral",
+        "Clássico"
+      ]
+    },
+    {
+      "ref": "BH101025",
+      "field": "estilo",
+      "old": [
+        "Floral",
+        "Botânico/Folhagem",
+        "Clássico"
+      ],
+      "new": [
+        "Floral",
+        "Clássico"
+      ]
+    },
+    {
+      "ref": "BH101018",
+      "field": "estilo",
+      "old": [
+        "Botânico/Folhagem",
+        "Pássaros",
+        "Floral",
+        "Temático"
+      ],
+      "new": [
+        "Pássaros",
+        "Floral",
+        "Temático"
+      ]
+    },
+    {
+      "ref": "81185",
+      "field": "estilo",
+      "old": [
+        "Floral",
+        "Botânico/Folhagem",
+        "Pássaros"
+      ],
+      "new": [
+        "Floral",
+        "Pássaros"
+      ]
+    },
+    {
+      "ref": "81208",
+      "field": "estilo",
+      "old": [
+        "Botânico/Folhagem",
+        "Floral",
+        "Temático"
+      ],
+      "new": [
+        "Floral",
+        "Temático"
+      ]
+    },
+    {
+      "ref": "81222",
+      "field": "estilo",
+      "old": [
+        "Floral",
+        "Botânico/Folhagem",
+        "Pássaros"
+      ],
+      "new": [
+        "Floral",
+        "Pássaros"
+      ]
+    },
+    {
+      "ref": "81260",
+      "field": "estilo",
+      "old": [
+        "Floral",
+        "Botânico/Folhagem",
+        "Temático",
+        "Pássaros"
+      ],
+      "new": [
+        "Floral",
+        "Temático",
+        "Pássaros"
+      ]
+    },
+    {
+      "ref": "84414",
+      "field": "estilo",
+      "old": [
+        "Floral",
+        "Botânico/Folhagem",
+        "Pássaros"
+      ],
+      "new": [
+        "Floral",
+        "Pássaros"
+      ]
+    },
+    {
+      "ref": "84391",
+      "field": "estilo",
+      "old": [
+        "Botânico/Folhagem",
+        "Pássaros",
+        "Temático"
+      ],
+      "new": [
+        "Pássaros",
+        "Temático",
+        "Floral"
+      ]
+    },
+    {
+      "ref": "84377",
+      "field": "estilo",
+      "old": [
+        "Botânico/Folhagem",
+        "Floral"
+      ],
+      "new": [
+        "Floral"
+      ]
+    },
+    {
+      "ref": "84537",
+      "field": "estilo",
+      "old": [
+        "Botânico/Folhagem",
+        "Clássico"
+      ],
+      "new": [
+        "Clássico",
+        "Floral"
+      ]
+    },
+    {
+      "ref": "84551",
+      "field": "estilo",
+      "old": [
+        "Botânico/Folhagem",
+        "Clássico"
+      ],
+      "new": [
+        "Clássico",
+        "Floral"
+      ]
+    },
+    {
+      "ref": "84513",
+      "field": "estilo",
+      "old": [
+        "Floral",
+        "Botânico/Folhagem",
+        "Clássico"
+      ],
+      "new": [
+        "Floral",
+        "Clássico"
+      ]
+    }
+  ],
+  "colors_in_filter": [
+    "Amarelo/Dourado",
+    "Azul",
+    "Bege/Areia",
+    "Branco/Off-white",
+    "Cinza",
+    "Greige",
+    "Lavanda",
+    "Lilás",
+    "Marrom",
+    "Multicolorido",
+    "Preto",
+    "Pêssego",
+    "Rosa",
+    "Terracota/Laranja",
+    "Verde",
+    "Verde oliva",
+    "Vermelho/Bordô"
+  ],
+  "styles_in_filter": [
+    "Amadeirado",
+    "Animais",
+    "Borboletas",
+    "Botânico/Folhagem",
+    "Cachorros",
+    "Carrinhos",
+    "Cavalos",
+    "Clássico",
+    "Dinossauros",
+    "Estrelas",
+    "Floral",
+    "Fundo do mar",
+    "Gatos",
+    "Geométrico",
+    "Liso",
+    "Listrado",
+    "Paisagem",
+    "Poá",
+    "Provençal",
+    "Pássaros",
+    "Temático",
+    "Textura",
+    "Ursinhos",
+    "Xadrez"
+  ],
+  "color_filter_refreshed": true,
+  "style_filter_refreshed": true,
+  "bh_local_images_preserved": {
+    "BH101010": "imagens/home-finish/bio-habitat/repaired/BH101010.jpg",
+    "BH101011": "imagens/home-finish/bio-habitat/repaired/BH101011.jpg"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "base_source": "CATALOGO_FK_BRISA_CLASSIFICACOES_REVISAO_03.zip",
+  "total_items": 1266,
+  "changes": {
+    "PT500701": {
+      "image": "Kantai watermark removed and local file replaced"
+    },
+    "84384": {
+      "cor": [
+        "Verde"
+      ],
+      "estilo": [
+        "Floral"
+      ]
+    },
+    "TX-2034": {
+      "cor": [
+        "Bege/Areia"
+      ]
+    },
+    "TX-2035": {
+      "cor": [
+        "Marrom"
+      ]
+    },
+    "TX-2046": {
+      "cor": [
+        "Bege/Areia"
+      ]
+    },
+    "89983": {
+      "cor": [
+        "Rosa"
+      ]
+    }
+  },
+  "colors_in_filter": [
+    "Amarelo/Dourado",
+    "Azul",
+    "Bege/Areia",
+    "Branco/Off-white",
+    "Cinza",
+    "Greige",
+    "Lavanda",
+    "Lilás",
+    "Marrom",
+    "Multicolorido",
+    "Preto",
+    "Pêssego",
+    "Rosa",
+    "Terracota/Laranja",
+    "Verde",
+    "Verde oliva",
+    "Vermelho/Bordô"
+  ]
+}

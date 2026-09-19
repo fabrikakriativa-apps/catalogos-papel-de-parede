@@ -1,0 +1,8 @@
+VERSAO CLIENTE V02
+- 1.266 itens
+- Pacote completo com imagens do catalogo
+- Todas as imagens usadas pelo HTML apontam para arquivos locais do pacote
+- Exibe somente o codigo FK como identificador
+- Nao exibe codigo do fornecedor, fornecedor ou colecao
+- Busca/comparacao por multiplos codigos FK
+- Filtros: Tipo, Cor, Estilo, Perfil e limpar por icone

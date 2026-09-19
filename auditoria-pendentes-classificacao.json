@@ -1,0 +1,28 @@
+{
+  "total_itens": 1266,
+  "classificacao_pendente": 0,
+  "filtros_revisao_removidos": true,
+  "correcoes_cores": [
+    {
+      "ref": "AD300206R",
+      "removido": "Branco/Off-white",
+      "cores_finais": [
+        "Cinza"
+      ]
+    },
+    {
+      "ref": "CR333734R",
+      "removido": "Verde",
+      "cores_finais": [
+        "Cinza"
+      ]
+    },
+    {
+      "ref": "CR333780R",
+      "removido": "Branco/Off-white",
+      "cores_finais": [
+        "Bege/Areia"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "replaced": [
+    "BH101010",
+    "BH101011"
+  ],
+  "paths": {
+    "BH101010": "imagens/home-finish/bio-habitat/repaired/BH101010.jpg",
+    "BH101011": "imagens/home-finish/bio-habitat/repaired/BH101011.jpg"
+  },
+  "source_zip": "CATALOGO_FK_BRISA_CLASSIFICACOES_REVISAO_02.zip"
+}
