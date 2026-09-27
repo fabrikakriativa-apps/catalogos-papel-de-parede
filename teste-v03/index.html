@@ -184,8 +184,63 @@ body.fk-view-open .fk-v03{display:block}
 .fk-confirm-actions .fk-btn{font-size:14px;min-height:47px}
 @media(max-width:380px){.fk-confirm-card{padding:22px 17px 18px}}
 
+
+/* V03.3 — Jornada guiada, controles compactos e formulário touch-friendly. */
+.fk-v03.fk-organizing .fk-v03-tabs{display:none}
+.fk-exit-organize{border:0;background:transparent;color:#975027;padding:0 0 11px;font:inherit;font-size:13px;font-weight:750;cursor:pointer}
+.fk-organize-card{border:1px solid #efd3c1;background:#fff9f4;border-radius:13px;padding:14px 15px;margin-bottom:15px;display:grid;gap:7px}
+.fk-organize-step{font-size:10px;font-weight:850;color:#a94713;letter-spacing:.14em}
+.fk-organize-card>strong{font-size:16px;color:#28211b}
+.fk-organize-card p{font-size:13px;line-height:1.5;color:#5f574f;margin:0}
+.fk-guide-counter{display:flex;justify-content:space-between;align-items:center;gap:6px;color:#6b6259;font-size:11px;border-top:1px solid #f0dccd;padding-top:8px;margin-top:3px}
+.fk-guide-counter span:first-child{font-weight:800;color:#a94610}
+.fk-organize-actions{width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,1.2fr);gap:9px;align-items:center}
+.fk-organize-actions[hidden],.fk-organize-guide[hidden],.fk-sticky-actions #fkSelectMode[hidden]{display:none!important}
+.fk-organize-status{min-width:0;display:flex;flex-direction:column;gap:2px;font-size:12px}
+.fk-organize-status strong{color:#29231d;font-size:14px}
+.fk-organize-status span{color:#797067;font-size:10px}
+.fk-favorites-sticky{background:linear-gradient(180deg,rgba(245,242,236,.55),var(--paper) 24%);border-top:1px solid #e6ded5;margin-top:12px;padding:11px 0 max(13px,env(safe-area-inset-bottom));}
+.fk-favorites-sticky .fk-btn-primary{font-size:14px;min-height:49px}
+.fk-v03.fk-organizing #fkFavoritesGrid{padding-bottom:12px}
+.fk-assign-sheet{padding-bottom:max(24px,env(safe-area-inset-bottom))}
+.fk-assign-intro{font-size:14px;color:#5d554d;line-height:1.5;margin:9px 0 10px}
+.fk-selected-codes{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 20px}
+.fk-code-chip{display:inline-flex;padding:6px 9px;background:#fff4eb;color:#994b1c;border:1px solid #ecd2bf;border-radius:999px;font-size:12px;font-weight:800}
+.fk-assign-label{font-size:11px;letter-spacing:.06em;font-weight:800;color:#666057;margin:8px 0 9px}
+.fk-assign-rooms{display:grid;gap:9px}
+.fk-assign-room{display:grid;grid-template-columns:1fr auto;column-gap:10px;row-gap:4px;width:100%;min-height:68px;text-align:left;padding:13px;border:1px solid #dcd5cb;border-radius:12px;background:#fff;cursor:pointer;font:inherit;color:#29231f}
+.fk-assign-room[aria-pressed="true"]{border:2px solid var(--accent);background:#fff7f1;padding:12px}
+.fk-assign-room:disabled{opacity:.6;cursor:not-allowed;background:#f8f5f1}
+.fk-assign-room-name{font-weight:800;font-size:14px;overflow-wrap:anywhere}
+.fk-assign-room-pill{color:#884516;background:#f8eade;border-radius:999px;padding:4px 7px;font-size:11px;font-weight:800;white-space:nowrap;align-self:start}
+.fk-assign-room-help{font-size:11px;color:#777066;grid-column:1/-1}
+.fk-assign-create{width:100%;text-align:left;color:#a94610;margin-top:11px;font-size:13px;border-style:dashed}
+.fk-assign-hint{min-height:16px;font-size:12px;color:#6c6359;margin:12px 0 0;line-height:1.4}
+.fk-assign-actions{position:sticky;bottom:0;padding:12px 0 max(7px,env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent,var(--paper) 19%);z-index:3}
+.fk-assign-actions .fk-btn{width:100%;font-size:14px;min-height:49px}
+/* Radio inputs preserve native keyboard/screen-reader semantics but labels become aligned touch cards. */
+.fk-surface-fieldset{border:0;padding:0;margin:17px 0 20px;min-width:0}
+.fk-surface-fieldset legend{font-weight:800;font-size:13px;margin-bottom:10px}
+.fk-surface-options{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.fk-surface-option{position:relative;display:block;min-width:0;cursor:pointer}
+.fk-surface-option input{position:absolute;opacity:0;width:1px;height:1px;left:10px;top:10px;margin:0;padding:0}
+.fk-surface-content{min-height:66px;border:1px solid #dcd4ca;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;gap:7px;padding:10px;color:#5e554d;font-size:13px;font-weight:750;transition:border-color .12s,background .12s;line-height:1.3}
+.fk-surface-content svg{width:22px;height:22px;flex:none}
+.fk-surface-check{display:none;margin-left:auto;color:#c85414;font-weight:900}
+.fk-surface-option input:checked+.fk-surface-content{border:2px solid var(--accent);background:#fff7f0;color:#a34712;padding:9px}
+.fk-surface-option input:checked+.fk-surface-content .fk-surface-check{display:inline}
+.fk-surface-option input:focus-visible+.fk-surface-content{outline:3px solid rgba(200,84,20,.33);outline-offset:2px}
+.fk-surface-other{grid-column:1/-1}
+.fk-surface-other .fk-surface-content{justify-content:flex-start;min-height:54px;padding-left:15px}
+.fk-surface-other input:checked+.fk-surface-content{padding-left:14px}
+#fkRoomDialog .fk-sheet,#fkAssignDialog .fk-sheet{max-height:calc(var(--fk-vv-height,100dvh) - 12px);scroll-padding-bottom:100px}
+.fk-overlay.fk-open{height:var(--fk-vv-height,100dvh);top:var(--fk-vv-top,0px);bottom:auto}
+.fk-room-form-actions{position:sticky;bottom:0;background:linear-gradient(180deg,transparent,var(--paper) 16%);padding:12px 0 max(9px,env(safe-area-inset-bottom));z-index:4;margin-top:18px}
+.fk-room-form-actions .fk-btn{min-height:48px}
+@media(max-width:760px){.fk-organize-actions{grid-template-columns:minmax(0,1fr) minmax(185px,1.3fr)}.fk-organize-status strong{font-size:13px}.fk-organize-status span{font-size:9px}}
+@media(max-width:375px){.fk-organize-actions{grid-template-columns:1fr;gap:6px}.fk-organize-status{flex-direction:row;align-items:center;justify-content:space-between}.fk-favorites-sticky .fk-btn-primary{min-height:46px}}
 </style>
-<meta name="fk-client-version" content="3.0">
+<meta name="fk-client-version" content="3.3">
 <base href="../">
 </head>
 <body>
@@ -235,12 +290,26 @@ body.fk-view-open .fk-v03{display:block}
  <div class="fk-v03-tabs" role="tablist" aria-label="Organização dos papéis"><button id="fkTabFavorites" role="tab" type="button" aria-selected="true" aria-controls="fkFavoritesPane">♡ Meus Favoritos</button><button id="fkTabRooms" role="tab" type="button" aria-selected="false" aria-controls="fkRoomsPane">⌂ Meus Ambientes</button></div>
  <p id="fkSaveState" class="fk-save-state" aria-live="polite">✓ Suas escolhas são salvas automaticamente neste aparelho e navegador.</p>
  <div id="fkFavoritesPane" role="tabpanel">
-  <p class="fk-v03-note">Favorite quantos papéis desejar. Organize até 6 opções por ambiente quando quiser solicitar cotação.</p>
+  <p class="fk-v03-note" id="fkNormalIntro">Favorite quantos papéis desejar. Organize até 6 opções por ambiente quando quiser solicitar cotação.</p>
+  <div id="fkOrganizeGuide" class="fk-organize-guide" hidden>
+    <button id="fkExitOrganize" type="button" class="fk-exit-organize">← Voltar aos favoritos</button>
+    <div class="fk-organize-card">
+      <div class="fk-organize-step">ETAPA 1 DE 2</div>
+      <strong>Selecione os papéis para cotação</strong>
+      <p>Toque em “Selecionar” nos modelos desejados. Depois escolha o ambiente onde serão usados.</p>
+      <div class="fk-guide-counter"><span id="fkStepSelectedCount">0 de 6 selecionados</span><span>Por ambiente</span></div>
+    </div>
+  </div>
   <div class="fk-v03-actions"><input id="fkFavoritesQuery" type="search" placeholder="Buscar nos meus favoritos…" aria-label="Buscar nos meus favoritos"><select id="fkFavoritesGroup" aria-label="Filtrar favoritos por inclusão em ambiente"><option value="todos">Todos</option><option value="assigned">Já incluídos</option><option value="unassigned">Não incluídos</option></select></div>
   <p class="fk-v03-note" id="fkFavoritesCount">0 favoritos</p>
   <section id="fkFavoritesGrid" class="fk-v03-grid" aria-label="Produtos favoritos"></section>
-  <div id="fkSelectionTools" hidden><div class="fk-room" style="margin-top:12px"><strong id="fkSelectedCount">0 selecionados</strong><p class="fk-v03-note" style="margin-top:7px">Escolha um ambiente para incluir os modelos selecionados (máximo 6 por ambiente).</p><div class="fk-v03-actions"><select id="fkChooseRoom" aria-label="Ambiente de destino"><option value="">Selecione um ambiente</option></select><button type="button" class="fk-btn" id="fkCreateFromSelection">+ Novo ambiente</button></div><button type="button" id="fkAssignSelected" class="fk-btn fk-btn-primary" style="width:100%">Adicionar ao ambiente</button></div></div>
-  <div class="fk-sticky-actions"><button type="button" class="fk-btn fk-btn-primary" id="fkSelectMode">Organizar minha seleção</button></div>
+  <div class="fk-sticky-actions fk-favorites-sticky" id="fkFavSticky">
+    <button type="button" class="fk-btn fk-btn-primary" id="fkSelectMode">Organizar minha seleção</button>
+    <div id="fkOrganizeActions" class="fk-organize-actions" hidden>
+      <div class="fk-organize-status"><strong id="fkSelectedCount">0 selecionados</strong><span>Até 6 modelos por ambiente</span></div>
+      <button type="button" id="fkAssignSelected" class="fk-btn fk-btn-primary" disabled>Adicionar ao ambiente →</button>
+    </div>
+  </div>
  </div>
  <div id="fkRoomsPane" role="tabpanel" hidden>
   <p class="fk-v03-note">Dê nomes personalizados aos seus espaços, informe as medidas e selecione até 6 papéis para cotar em cada ambiente.</p>
@@ -258,13 +327,30 @@ body.fk-view-open .fk-v03{display:block}
   <div class="fk-panel-actions"><button type="button" class="fk-btn" id="fkFiltersReset">↺ Limpar filtros</button><button type="button" class="fk-btn fk-btn-primary" id="fkFiltersDone" style="flex:1">Ver resultados</button></div>
  </div>
 </div>
+<div id="fkAssignDialog" class="fk-overlay fk-assign-overlay" role="dialog" aria-modal="true" aria-labelledby="fkAssignTitle">
+ <div class="fk-sheet fk-assign-sheet">
+  <div class="fk-sheet-head"><h2 id="fkAssignTitle">Adicionar ao ambiente</h2><button type="button" id="fkAssignClose" class="fk-x" aria-label="Voltar à seleção">×</button></div>
+  <div class="fk-organize-step">ETAPA 2 DE 2</div>
+  <p class="fk-assign-intro">Onde você deseja incluir <strong id="fkAssignCount">0 modelos</strong> para cotação?</p>
+  <div id="fkAssignCodes" class="fk-selected-codes" aria-label="Códigos selecionados"></div>
+  <p class="fk-assign-label">ESCOLHA UM DOS SEUS AMBIENTES</p>
+  <div id="fkAssignRooms" class="fk-assign-rooms"></div>
+  <button type="button" id="fkAssignCreateRoom" class="fk-btn fk-assign-create">+ Criar novo ambiente</button>
+  <p id="fkAssignHint" class="fk-assign-hint" aria-live="polite">Selecione um ambiente para continuar.</p>
+  <div class="fk-panel-actions fk-assign-actions"><button type="button" id="fkAssignConfirm" class="fk-btn fk-btn-primary" disabled>Confirmar inclusão</button></div>
+ </div>
+</div>
 <div id="fkRoomDialog" class="fk-overlay" role="dialog" aria-modal="true" aria-labelledby="fkRoomDialogTitle">
  <div class="fk-sheet"><div class="fk-sheet-head"><h2 id="fkRoomDialogTitle">Criar ambiente</h2><button type="button" id="fkRoomDialogClose" class="fk-x" aria-label="Fechar">×</button></div>
   <form id="fkRoomForm" novalidate><div class="fk-panel-field"><label for="fkRoomName">Nome do ambiente</label><input id="fkRoomName" type="text" maxlength="80" placeholder="Ex.: Quarto da Helena"></div>
-  <fieldset style="border:0;padding:0;margin:14px 0 18px"><legend style="font-weight:750;font-size:13px">Onde será aplicado?</legend><div class="fk-radio-group"><label><input name="fkSurface" type="radio" value="parede" checked>Parede</label><label><input name="fkSurface" type="radio" value="teto">Teto</label><label><input name="fkSurface" type="radio" value="outra">Outra superfície</label></div></fieldset>
+  <fieldset class="fk-surface-fieldset"><legend>Onde será aplicado?</legend><div class="fk-surface-options">
+    <label class="fk-surface-option"><input name="fkSurface" type="radio" value="parede" checked><span class="fk-surface-content"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/></svg><span>Parede</span><span class="fk-surface-check" aria-hidden="true">✓</span></span></label>
+    <label class="fk-surface-option"><input name="fkSurface" type="radio" value="teto"><span class="fk-surface-content"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 6h18M6 10h12M9 14h6M12 14v6"/></svg><span>Teto</span><span class="fk-surface-check" aria-hidden="true">✓</span></span></label>
+    <label class="fk-surface-option fk-surface-other"><input name="fkSurface" type="radio" value="outra"><span class="fk-surface-content"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 8 12 4l8 4-8 4-8-4ZM4 13l8 4 8-4M4 18l8 4 8-4"/></svg><span>Outra superfície</span><span class="fk-surface-check" aria-hidden="true">✓</span></span></label>
+  </div></fieldset>
   <p class="fk-v03-note">Medidas aproximadas (opcionais)</p><div class="fk-measures"><div class="fk-panel-field"><label for="fkRoomWidth">Largura (m)</label><input id="fkRoomWidth" inputmode="decimal" maxlength="12" placeholder="Ex.: 3,50"></div><div class="fk-panel-field"><label for="fkRoomSecond" id="fkSecondLabel">Altura (m)</label><input id="fkRoomSecond" inputmode="decimal" maxlength="12" placeholder="Ex.: 2,80"></div></div>
   <p class="fk-note-small">As medidas podem ser confirmadas pela equipe da Fábrika. Não calculamos rolos automaticamente nesta etapa.</p>
-  <div class="fk-panel-actions"><button id="fkCancelRoom" class="fk-btn" type="button">Cancelar</button><button class="fk-btn fk-btn-primary" type="submit" style="flex:1">Salvar ambiente</button></div></form>
+  <div class="fk-panel-actions fk-room-form-actions"><button id="fkCancelRoom" class="fk-btn" type="button">Cancelar</button><button class="fk-btn fk-btn-primary" type="submit" style="flex:1">Salvar ambiente</button></div></form>
  </div>
 </div>
 <div id="fkConfirmDialog" class="fk-overlay fk-confirm-overlay" role="alertdialog" aria-modal="true" aria-labelledby="fkConfirmTitle" aria-describedby="fkConfirmText" aria-hidden="true">
@@ -354,7 +440,7 @@ function initialState(){
 const state=initialState();
 let storageOK=true;
 try{const probe=KEY+'-probe';localStorage.setItem(probe,'1');localStorage.removeItem(probe)}catch(err){storageOK=false}
-let activeView='',activeTab='favorites',catalogScroll=0,hasViewHistory=false,selecting=false,selected=new Set(),favTerm='',favGroup='todos',roomEditId=null,dialogReturnTab='rooms';
+let activeView='',activeTab='favorites',catalogScroll=0,hasViewHistory=false,selecting=false,selected=new Set(),favTerm='',favGroup='todos',roomEditId=null,dialogReturnTab='rooms',chosenRoomId='';
 let toastTimer=null;
 const safe=(v)=>e(String(v??''));
 const roomsFor=code=>state.rooms.filter(r=>r.codes.includes(code));
@@ -455,6 +541,17 @@ const mirrorPairs=[['fkMirrorType',tf],['fkMirrorColor',cof],['fkMirrorStyle',sf
 function syncMirrors(){for(const [id,origin] of mirrorPairs){const copy=$(id);copy.innerHTML=origin.innerHTML;copy.value=origin.value}}
 function showOverlay(id){$(id).classList.add('fk-open');document.body.style.overflow='hidden'}
 function hideOverlay(id){$(id).classList.remove('fk-open');if(!document.querySelector('.fk-overlay.fk-open'))document.body.style.overflow=''}
+function updateOverlayViewport(){
+ const vv=window.visualViewport;
+ if(!vv)return;
+ document.documentElement.style.setProperty('--fk-vv-height',`${vv.height}px`);
+ document.documentElement.style.setProperty('--fk-vv-top',`${vv.offsetTop}px`);
+}
+if(window.visualViewport){visualViewport.addEventListener('resize',updateOverlayViewport,{passive:true});visualViewport.addEventListener('scroll',updateOverlayViewport,{passive:true});updateOverlayViewport()}
+$('fkRoomForm').addEventListener('focusin',ev=>{
+ if(!ev.target.matches('input'))return;
+ setTimeout(()=>{if($('fkRoomDialog').classList.contains('fk-open'))ev.target.scrollIntoView({block:'center',behavior:'smooth'})},160);
+});
 let fkConfirmationPending=null;
 function fkConfirm(title, message, action='Confirmar'){
  // Quando houver confirmação aberta, ignora novos pedidos para não perder a ação anterior.
@@ -524,14 +621,16 @@ function backToCatalog(){if(hasViewHistory){hasViewHistory=false;history.back()}
 window.addEventListener('popstate',()=>{if(activeView){hasViewHistory=false;closeView()}});
 $('fkHeaderFav').addEventListener('click',()=>openView('favorites'));
 $('fkCompactFav').addEventListener('click',()=>openView('favorites'));
-$('fkViewBack').addEventListener('click',backToCatalog);
-$('fkTabFavorites').addEventListener('click',()=>{activeTab='favorites';renderView()});
-$('fkTabRooms').addEventListener('click',()=>{activeTab='rooms';renderView()});
+$('fkViewBack').addEventListener('click',()=>{if(selecting)stopOrganize();else backToCatalog()});
+$('fkTabFavorites').addEventListener('click',()=>{if(selecting)stopOrganize();activeTab='favorites';renderView()});
+$('fkTabRooms').addEventListener('click',()=>{if(selecting)stopOrganize();activeTab='rooms';renderView()});
 function renderView(){
  $('fkTabFavorites').setAttribute('aria-selected',String(activeTab==='favorites'));
  $('fkTabRooms').setAttribute('aria-selected',String(activeTab==='rooms'));
  $('fkFavoritesPane').hidden=activeTab!=='favorites';$('fkRoomsPane').hidden=activeTab!=='rooms';
- $('fkViewTitle').textContent=activeTab==='favorites'?'Meus Favoritos':'Meus Ambientes';
+ $('fkViewTitle').textContent=selecting&&activeTab==='favorites'?'Organizar para cotação':activeTab==='favorites'?'Meus Favoritos':'Meus Ambientes';
+ $('fkViewBack').setAttribute('aria-label',selecting?'Voltar aos favoritos':'Voltar ao catálogo');
+ $('fkView').classList.toggle('fk-organizing',selecting&&activeTab==='favorites');
  updateSaveState();updateChrome();
  if(activeTab==='favorites')renderFavorites();else renderRooms();
 }
@@ -543,39 +642,70 @@ function renderFavorites(){
  if(favGroup==='assigned')items=items.filter(x=>roomsFor(x.codigo).length);
  if(favGroup==='unassigned')items=items.filter(x=>!roomsFor(x.codigo).length);
  $('fkFavoritesGrid').innerHTML=items.length?items.map(x=>decorateCard(x,'favorites')).join(''):`<div class="fk-v03-empty">${state.favorites.length?'Nenhum favorito corresponde à busca.':'Toque no coração dos produtos para começar sua seleção.'}</div>`;
- $('fkSelectMode').textContent=selecting?'Cancelar organização':'Organizar minha seleção';
- $('fkSelectionTools').hidden=!selecting;
+ $('fkNormalIntro').hidden=selecting;
+ $('fkOrganizeGuide').hidden=!selecting;
+ $('fkSelectMode').hidden=selecting;
+ $('fkOrganizeActions').hidden=!selecting;
  $('fkSelectedCount').textContent=`${selected.size} selecionado${selected.size===1?'':'s'}`;
- updateRoomChoices();
+ $('fkStepSelectedCount').textContent=`${selected.size} de 6 selecionados`;
+ $('fkAssignSelected').disabled=!selected.size;
 }
 $('fkFavoritesQuery').addEventListener('input',ev=>{favTerm=ev.target.value;renderFavorites()});
 $('fkFavoritesGroup').addEventListener('change',ev=>{favGroup=ev.target.value;renderFavorites()});
-$('fkSelectMode').addEventListener('click',()=>{selecting=!selecting;selected.clear();renderFavorites()});
+function stopOrganize(){selecting=false;selected.clear();$('fkView').classList.remove('fk-organizing');renderView()}
+$('fkSelectMode').addEventListener('click',()=>{
+ if(!state.favorites.length){fkToast('Favorite alguns papéis antes de organizar.');return}
+ selecting=true;selected.clear();renderView();window.scrollTo({top:0,behavior:'instant'});
+});
+$('fkExitOrganize').addEventListener('click',stopOrganize);
 function toggleSelected(code){
  if(!selectedFav(code))return;
+ if(!selected.has(code)&&selected.size>=6){fkToast('Selecione até 6 modelos por vez. Você poderá organizar os demais depois.',4500);return}
  selected.has(code)?selected.delete(code):selected.add(code);
  renderFavorites();
 }
-function updateRoomChoices(){
- const select=$('fkChooseRoom'),was=select.value;
- select.innerHTML='<option value="">Selecione um ambiente</option>';
- state.rooms.forEach(r=>select.add(new Option(`${r.name} (${r.codes.length}/6)`,r.id)));
- if(state.rooms.some(r=>r.id===was))select.value=was;
+function additionsFor(room){return [...selected].filter(code=>!room.codes.includes(code))}
+function renderAssignRooms(){
+ const holder=$('fkAssignRooms');
+ if(!state.rooms.length){holder.innerHTML='<div class="fk-v03-empty">Você ainda não criou ambientes. Crie um para receber os modelos selecionados.</div>'}
+ else holder.innerHTML=state.rooms.map(room=>{
+   const additions=additionsFor(room),available=6-room.codes.length,full=additions.length>available;
+   const chosen=room.id===chosenRoomId;
+   return `<button type="button" class="fk-assign-room" data-assign-room="${safe(room.id)}" aria-pressed="${chosen}" ${full?'disabled':''}>
+      <span class="fk-assign-room-name">${safe(room.name)}</span>
+      <span class="fk-assign-room-pill">${room.codes.length}/6</span>
+      <span class="fk-assign-room-help">${full?`Vagas insuficientes · ${available} disponíve${available===1?'l':'is'}`:additions.length?`${available} vaga${available===1?'':'s'} disponíve${available===1?'l':'is'}`:'Estes modelos já estão neste ambiente'}</span>
+    </button>`;
+ }).join('');
+ const chosen=state.rooms.find(r=>r.id===chosenRoomId),okay=chosen&&additionsFor(chosen).length<=6-chosen.codes.length;
+ $('fkAssignConfirm').disabled=!okay;
+ $('fkAssignHint').textContent=!state.rooms.length?'Dê um nome ao ambiente para continuar.':!chosen?'Escolha um ambiente ou crie um novo para continuar.':okay?'Os favoritos permanecerão salvos após a inclusão.':'Este ambiente não tem vagas suficientes.';
 }
+function openAssignDialog(){
+ if(!selected.size){fkToast('Selecione pelo menos um papel.');return}
+ chosenRoomId='';$('fkAssignCount').textContent=`${selected.size} modelo${selected.size===1?'':'s'}`;
+ $('fkAssignCodes').innerHTML=[...selected].map(c=>`<span class="fk-code-chip">${safe(c)}</span>`).join('');
+ renderAssignRooms();showOverlay('fkAssignDialog');
+}
+function closeAssignDialog(){hideOverlay('fkAssignDialog')}
 function addSelectedToRoom(){
- const room=state.rooms.find(r=>r.id===$('fkChooseRoom').value);
+ const room=state.rooms.find(r=>r.id===chosenRoomId);
  if(!room){fkToast('Selecione ou crie um ambiente.');return}
  if(!selected.size){fkToast('Selecione pelo menos um papel favorito.');return}
- const additions=[...selected].filter(c=>!room.codes.includes(c));
- if(room.codes.length+additions.length>6){
-  fkToast(room.codes.length===6?'Este ambiente já tem 6/6 opções. Retire um modelo antes de adicionar outro.':`Este ambiente já tem ${room.codes.length} de 6 opções. Você pode adicionar apenas ${6-room.codes.length} nova(s).`,5000);return;
- }
- room.codes.push(...additions);persist();selecting=false;selected.clear();
- fkToast(additions.length?`${additions.length} opção(ões) incluída(s) em ${room.name}.`:'Essas opções já fazem parte deste ambiente.');
- renderFavorites();
+ const additions=additionsFor(room);
+ if(room.codes.length+additions.length>6){fkToast('Este ambiente não tem vagas suficientes para essa seleção.',4500);renderAssignRooms();return}
+ room.codes.push(...additions);persist();closeAssignDialog();selecting=false;selected.clear();
+ activeTab='rooms';renderView();window.scrollTo({top:0,behavior:'instant'});
+ fkToast(additions.length?`${additions.length} modelo${additions.length===1?' incluído':'s incluídos'} em ${room.name}. Os favoritos foram preservados.`:'Esses modelos já fazem parte deste ambiente.',4500);
 }
-$('fkAssignSelected').addEventListener('click',addSelectedToRoom);
-$('fkCreateFromSelection').addEventListener('click',()=>openRoomDialog(null,'favorites'));
+$('fkAssignSelected').addEventListener('click',openAssignDialog);
+$('fkAssignClose').addEventListener('click',closeAssignDialog);
+$('fkAssignCreateRoom').addEventListener('click',()=>openRoomDialog(null,'favorites'));
+$('fkAssignConfirm').addEventListener('click',addSelectedToRoom);
+$('fkAssignRooms').addEventListener('click',ev=>{
+ const b=ev.target.closest('[data-assign-room]');if(!b||b.disabled)return;
+ chosenRoomId=b.dataset.assignRoom;renderAssignRooms();
+});
 $('fkCreateRoom').addEventListener('click',()=>openRoomDialog(null,'rooms'));
 function surfaceName(r){return r.surface==='teto'?'Teto':r.surface==='outra'?'Outra superfície':'Parede'}
 function secondName(r){return r.surface==='teto'?'Comprimento':r.surface==='outra'?'Altura/Comprimento':'Altura'}
@@ -622,7 +752,7 @@ function openRoomDialog(id,returnTab){
  $('fkRoomWidth').value=room?room.width:'';
  $('fkRoomSecond').value=room?room.second:'';
  updateSecondLabel();showOverlay('fkRoomDialog');
- setTimeout(()=>$('fkRoomName').focus(),50);
+ // Não abrir o teclado do iPhone automaticamente: o formulário permanece inteiramente visível.
 }
 function closeRoomDialog(){hideOverlay('fkRoomDialog');roomEditId=null}
 $('fkRoomDialogClose').addEventListener('click',closeRoomDialog);
@@ -645,21 +775,19 @@ $('fkRoomForm').addEventListener('submit',ev=>{
  else{room={id:`a-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`,name,surface,width,second,codes:[]};state.rooms.push(room)}
  persist();closeRoomDialog();
  if(dialogReturnTab==='favorites'){
-  $('fkChooseRoom').innerHTML='';updateRoomChoices();$('fkChooseRoom').value=room.id;
-  renderFavorites();$('fkChooseRoom').value=room.id;
+  chosenRoomId=room.id;renderAssignRooms();
  }else renderRooms();
 });
 function createWhatsAppMessage(){
  const rooms=state.rooms.filter(r=>r.codes.length);
  if(!rooms.length)return '';
- // Somente símbolos BMP de ampla compatibilidade: alguns redirecionamentos
- // do WhatsApp desktop substituem emojis de 4 bytes por caracteres inválidos.
- const lines=['♥ *SOLICITAÇÃO DE COTAÇÃO — FÁBRIKA KRIATIVA*','','Olá! Organizei meus modelos preferidos do catálogo digital e gostaria de solicitar uma cotação.'];
+ // Texto UTF-8 e encodeURIComponent no link do WhatsApp; lápis U+270F + VS16.
+ const lines=['*SOLICITAÇÃO DE COTAÇÃO — FÁBRIKA KRIATIVA*','','Olá! Organizei minhas opções de papéis de parede por ambiente e gostaria de solicitar uma cotação.'];
  for(const r of rooms){
-  lines.push('',`⌂ *${r.name.toLocaleUpperCase('pt-BR')}*`,`Aplicação: ${surfaceName(r)}`,`Medidas aproximadas: ${measureSummary(r)}`,'', 'Modelos selecionados:');
-  r.codes.forEach(c=>lines.push(`• ${c}`));
+  lines.push('',`*${r.name.toLocaleUpperCase('pt-BR')}*`,`Aplicação: ${surfaceName(r)}`,`Medidas aproximadas: ${measureSummary(r)}`,'', '*Modelos selecionados:*');
+  r.codes.forEach(c=>lines.push(`✏️ ${c}`));
  }
- lines.push('','▣ *RESUMO DA SELEÇÃO*',`Ambientes: ${rooms.length}`,`Opções para cotação: ${rooms.reduce((sum,r)=>sum+r.codes.length,0)}`,'','Gostaria de receber orientação e orçamento para essas opções. Obrigada! ♥');
+ lines.push('','*RESUMO DA SOLICITAÇÃO*',`Ambientes: ${rooms.length}`,`Opções para cotação: ${rooms.reduce((sum,r)=>sum+r.codes.length,0)}`,'','Aguardo orientações e orçamento. Obrigada!');
  return lines.join('\n');
 }
 $('fkQuoteButton').addEventListener('click',()=>{
@@ -676,17 +804,19 @@ $('fkCopyQuote').addEventListener('click',async()=>{
   fkToast('Resumo copiado! Agora é só colar no WhatsApp.',4200)
  }catch(err){fkToast('Não foi possível copiar automaticamente. Utilize o botão do WhatsApp.',4700)}
 });
-for(const id of ['fkFiltersDialog','fkRoomDialog'])$(id).addEventListener('click',ev=>{if(ev.target===$(id))hideOverlay(id)});
+for(const id of ['fkFiltersDialog','fkRoomDialog','fkAssignDialog'])$(id).addEventListener('click',ev=>{if(ev.target===$(id))id==='fkAssignDialog'?closeAssignDialog():id==='fkRoomDialog'?closeRoomDialog():hideOverlay(id)});
 document.addEventListener('keydown',ev=>{
  if(ev.key!=='Escape')return;
  if($('fkConfirmDialog').classList.contains('fk-open'))return;
  if($('fkRoomDialog').classList.contains('fk-open'))closeRoomDialog();
+ else if($('fkAssignDialog').classList.contains('fk-open'))closeAssignDialog();
  else if($('fkFiltersDialog').classList.contains('fk-open'))closeFilters();
+ else if(selecting)stopOrganize();
  else if(activeView&&!modal.classList.contains('open'))backToCatalog();
 });
 updateChrome();onScroll();render();
 /* Automated and manual QA may call this read-only diagnostic without exposing private store details. */
-window.FKClientV03={status:()=>({favorites:state.favorites.length,rooms:state.rooms.length,roomsDetail:state.rooms.map(r=>({name:r.name,codes:[...r.codes],width:r.width,second:r.second,surface:r.surface})),storageOK,view:activeView,compact:compactBar.classList.contains('fk-visible')}),whatsAppMessage:createWhatsAppMessage};
+window.FKClientV03={status:()=>({favorites:state.favorites.length,rooms:state.rooms.length,roomsDetail:state.rooms.map(r=>({name:r.name,codes:[...r.codes],width:r.width,second:r.second,surface:r.surface})),storageOK,view:activeView,compact:compactBar.classList.contains('fk-visible'),selecting,selected:[...selected]}),whatsAppMessage:createWhatsAppMessage};
 })();
 
 </script>
