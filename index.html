@@ -379,12 +379,29 @@ function parseQuery(raw){
 }
 function codeMatch(x,t){const c=norm(x.codigo);return c===t||c.includes(t)}
 function fill(select,values,label){select.innerHTML=`<option value="">${label}</option>`;[...new Set(values.filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),'pt-BR',{sensitivity:'base'})).forEach(v=>select.add(new Option(v,v)))}
-function passesFilters(x){return(!tf.value||x.tipo===tf.value)&&(!cof.value||arr(x.cor).includes(cof.value))&&(!sf.value||arr(x.estilo).includes(sf.value))&&(!pf.value||x.perfil===pf.value)}
+const CASCADE_FILTERS=[
+ {key:'tipo',select:tf,label:'Todos os tipos',values:x=>[x.tipo]},
+ {key:'cor',select:cof,label:'Todas as cores',values:x=>arr(x.cor)},
+ {key:'estilo',select:sf,label:'Todos os estilos',values:x=>arr(x.estilo)},
+ {key:'perfil',select:pf,label:'Todos os perfis',values:x=>[x.perfil]}
+];
+function matchesFacet(x,def){const value=def.select.value;return !value||def.values(x).includes(value)}
+function passesFilters(x){return CASCADE_FILTERS.every(def=>matchesFacet(x,def))}
+function passesFiltersExcept(x,exceptKey){return CASCADE_FILTERS.every(def=>def.key===exceptKey||matchesFacet(x,def))}
+function refreshCascadeFilters(){
+  for(const def of CASCADE_FILTERS){
+    const keep=def.select.value;
+    const values=DATA.filter(x=>passesFiltersExcept(x,def.key)).flatMap(def.values);
+    fill(def.select,values,def.label);
+    if(keep&&[...def.select.options].some(o=>o.value===keep))def.select.value=keep;
+  }
+}
 function card(x){
   const tags=[...arr(x.cor).slice(0,2),...arr(x.estilo).slice(0,1)];
   return `<article class="card"><div class="pic" data-z="${e(x.zoom||'')}" data-code="${e(x.codigo)}">${x.card?`<img referrerpolicy="no-referrer" loading="lazy" decoding="async" src="${e(x.card)}" alt="Papel de parede ${e(x.codigo)}">`:'<div class="image-missing">Imagem indisponível</div>'}</div><div class="meta"><div class="ref">${e(x.codigo)}</div><div class="type">${e(x.tipo)}</div><div class="measure">${e(x.medida)}</div>${tags.length?`<div class="tags">${tags.map(t=>`<span class="tag">${e(t)}</span>`).join('')}</div>`:''}</div></article>`
 }
 function render(){
+  refreshCascadeFilters();
   const parsed=parseQuery(q.value); let results=[]; let missing=[];
   if(parsed.mode==='compare'){
     const found=new Map();
@@ -402,10 +419,6 @@ function render(){
   clearBtn.disabled=!(clean(q.value)||tf.value||cof.value||sf.value||pf.value);
 }
 function clearAll(){q.value='';tf.value='';cof.value='';sf.value='';pf.value='';render();q.focus()}
-fill(tf,DATA.map(x=>x.tipo),'Todos os tipos');
-fill(cof,DATA.flatMap(x=>arr(x.cor)),'Todas as cores');
-fill(sf,DATA.flatMap(x=>arr(x.estilo)),'Todos os estilos');
-fill(pf,DATA.map(x=>x.perfil),'Todos os perfis');
 [q,tf,cof,sf,pf].forEach(el=>el.addEventListener(el===q?'input':'change',render));
 clearBtn.addEventListener('click',clearAll);
 modal.addEventListener('click',ev=>{if(ev.target===modal||ev.target.classList.contains('close')){modal.classList.remove('open');mimg.src='';mcap.textContent=''}});
