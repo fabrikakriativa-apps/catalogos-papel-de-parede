@@ -17,10 +17,10 @@ button.secondary{background:#30302f}button.danger{background:#9e2222}button:disa
 </style></head><body>
 <header><small>FÁBRIKA KRIATIVA · USO INTERNO</small><h1>Convites do catálogo de clientes</h1></header>
 <main>
-<section id="loginBox"><h2>Entrar com acesso interno</h2><p>Utilize o usuário autorizado do sistema SISTEMA no Supabase. O cliente não precisa de login.</p>
+<section id="loginBox"><h2>Entrar com acesso interno</h2><p>Acesso exclusivo para fabrikakriativa@gmail.com. Receba um link por e-mail, sem senha.</p>
 <form id="loginForm"><label for="email">E-mail</label><input id="email" type="email" autocomplete="username" required>
-<label for="password">Senha</label><input id="password" type="password" autocomplete="current-password" required>
-<button type="submit">Entrar</button></form></section>
+
+<button type="submit">Enviar link de acesso</button></form></section>
 <div id="panel" class="hidden">
 <section><button type="button" id="logout" class="secondary">Sair</button><h2>Gerar link exclusivo</h2>
 <label for="label">Identificação do cliente ou seleção</label><input id="label" maxlength="120" placeholder="Ex.: Sala - Cliente Maria">
@@ -61,7 +61,7 @@ async function refresh(){
   }).join(""):'<p class="note">Nenhum link criado ainda.</p>';
  }catch(e){msg(e.message,true);}
 }
-$("loginForm").addEventListener("submit",async e=>{e.preventDefault();msg("Autenticando...");const {error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error){msg("Não foi possível entrar: "+error.message,true);return;}$("password").value="";msg("Acesso autorizado.");await refresh();});
+$("loginForm").addEventListener("submit",async e=>{e.preventDefault();msg("Autenticando...");if($("email").value.trim().toLowerCase()!=="fabrikakriativa@gmail.com"){msg("E-mail não autorizado.",true);return;}const {error}=await sb.auth.signInWithOtp({email:$("email").value.trim(),options:{emailRedirectTo:"https://papeldeparedefk-clientes.fabrikakriativa.com.br/gerenciar.html",shouldCreateUser:false}});if(error){msg("Não foi possível entrar: "+error.message,true);return;}msg("Se o usuário estiver cadastrado no Supabase Auth, o link será enviado para seu e-mail.");});
 $("logout").onclick=async()=>{await sb.auth.signOut();$("createdBox").classList.add("hidden");await refresh();};
 $("duration").onchange=()=>{$("expiryBox").classList.toggle("hidden",$("duration").value!=="temporary");};
 $("create").onclick=async()=>{
