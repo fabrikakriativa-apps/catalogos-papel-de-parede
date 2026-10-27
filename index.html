@@ -383,16 +383,24 @@ body.fk-view-open .fk-v03{display:block}
   const expiresAt=answer.expires_at ? new Date(answer.expires_at).getTime():null;
   if(expiresAt && expiresAt<=Date.now()){blocked("expired");return;}
   document.body.style.visibility="visible";
+  let checking=false;
   async function recheck(){
     if(expiresAt && Date.now()>=expiresAt){blocked("expired");return;}
+    if(checking||document.hidden)return;
+    checking=true;
     try{
       const res=await fetch(endpoint+"?action=status&token="+encodeURIComponent(token),{cache:"no-store",referrerPolicy:"no-referrer"});
       const reply=await res.json();
       if(!reply.ok)blocked(reply.reason||"invalid");
-    }catch(e){ document.body.style.visibility="hidden"; }
+    }catch(e){ /* Falha temporária de conexão: manter a página e tentar novamente. */ }
+    finally{checking=false;}
   }
-  setInterval(recheck,15000);
+  // Expiração local imediata, independente da próxima consulta de revogação.
+  if(expiresAt)setTimeout(()=>blocked("expired"),Math.min(Math.max(0,expiresAt-Date.now()),2147483647));
+  setInterval(()=>{if(expiresAt&&Date.now()>=expiresAt)blocked("expired");},5000);
+  setInterval(recheck,60000);
   document.addEventListener("visibilitychange",()=>{if(!document.hidden)recheck();});
+  window.addEventListener("focus",recheck);
 
 const q=document.querySelector('#q'),tf=document.querySelector('#type'),cof=document.querySelector('#color'),sf=document.querySelector('#style'),pf=document.querySelector('#profile'),clearBtn=document.querySelector('#clearFilters'),grid=document.querySelector('#grid'),cnt=document.querySelector('#count'),compareBadge=document.querySelector('#compareBadge'),modal=document.querySelector('#modal'),mimg=document.querySelector('#mimg'),mcap=document.querySelector('#mcap');
 function e(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
