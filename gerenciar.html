@@ -38,7 +38,7 @@ button.secondary{background:#30302f}button.danger{background:#9e2222}button:disa
 <script type="module">
 import {createClient} from "https://esm.sh/@supabase/supabase-js@2.57.4";
 const base="https://dpowbyexrcdcwwqysgzp.supabase.co",key="sb_publishable_5R2zVzcZQVAGGd72zXayFQ_zCp_tJkU";
-const sb=createClient(base,key,{auth:{persistSession:true,autoRefreshToken:true}});
+const sb=createClient(base,key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:"fk-client-catalog-admin-session-v1"}});
 const api=base+"/functions/v1/catalog-share";
 const $=id=>document.getElementById(id);
 const msg=(s,bad=false)=>{$("message").textContent=s;$("message").className=bad?"error":"ok"};
@@ -115,4 +115,5 @@ $("copy").onclick=async()=>{try{await navigator.clipboard.writeText($("resultLin
 $("refresh").onclick=refresh;
 $("list").addEventListener("click",async e=>{const b=e.target.closest("[data-revoke]");if(!b)return;if(!confirm("Revogar este link agora?"))return;try{await call("revoke","POST",{id:b.dataset.revoke});msg("Link revogado.");await refresh();}catch(e){msg(e.message,true)}});
 await refresh();
+sb.auth.onAuthStateChange((event,session)=>{if(event==="SIGNED_IN"||event==="SIGNED_OUT"||event==="TOKEN_REFRESHED"){queueMicrotask(()=>refresh());}});
 </script></body></html>
