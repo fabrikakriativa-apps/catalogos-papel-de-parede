@@ -24,9 +24,10 @@ button.secondary{background:#30302f}button.danger{background:#9e2222}button:disa
 <div id="panel" class="hidden">
 <section><button type="button" id="logout" class="secondary">Sair</button><h2>Gerar link exclusivo</h2>
 <label for="label">Identificação do cliente ou seleção</label><input id="label" maxlength="120" placeholder="Ex.: Sala - Cliente Maria">
-<label for="codes">Referências autorizadas (opcional)</label>
-<textarea id="codes" placeholder="FK-0001, FK-0002, FK-0120"></textarea>
-<p class="note">Informe os códigos FK separados por vírgulas ou quebras de linha para compartilhar somente esses produtos. Deixe vazio para compartilhar todo o catálogo de clientes.</p>
+<label for="scope">Produtos autorizados</label><select id="scope"><option value="all">Catálogo completo</option><option value="vendors">Por fornecedor</option><option value="collections">Por coleção</option><option value="codes">Por referências</option></select>
+<div id="vendorBox" class="hidden"><label for="vendorSelect">Fornecedores</label><select multiple size="4" id="vendorSelect"></select></div>
+<div id="collectionBox" class="hidden"><label for="vendorFilter">Filtrar por fornecedor</label><select id="vendorFilter"></select><label for="collectionSelect">Coleções</label><select multiple size="9" id="collectionSelect"></select></div>
+<div id="codeBox" class="hidden"><label for="codes">Referências</label><textarea id="codes" placeholder="FK-0001, FK-0002"></textarea></div><p class="note">Para selecionar várias opções, use Ctrl + clique (Windows) ou Command + clique (Mac).</p><p id="scopeCount" class="note"></p>
 <div class="row"><div><label for="duration">Validade</label><select id="duration"><option value="permanent">Permanente — sem vencimento</option><option value="temporary">Temporário — data e hora</option></select></div><div id="expiryBox" class="hidden"><label for="expires">Expira em (horário local)</label><input type="datetime-local" id="expires"></div></div>
 <button id="create" type="button">Gerar link exclusivo</button>
 <div id="createdBox" class="hidden"><p class="ok"><strong>Link criado.</strong> Copie agora: por segurança, o token completo não é exibido novamente no histórico.</p><input id="resultLink" readonly aria-label="Link gerado"><button type="button" id="copy" class="secondary">Copiar link</button></div>
@@ -48,11 +49,46 @@ async function call(action,method="GET",payload){
  const response=await fetch(api+"?action="+encodeURIComponent(action),{method,headers:{"Authorization":"Bearer "+session.access_token,"apikey":key,"Content-Type":"application/json"},body:payload?JSON.stringify(payload):undefined,cache:"no-store"});
  const data=await response.json();if(!response.ok||!data.ok)throw Error("Operação não concluída: "+(data.reason||response.status));return data;
 }
+let catalogOptions=[];
+const picked=id=>Array.from($(id).selectedOptions).map(o=>o.value);
+function selectedCodes(){
+ const scope=$("scope").value;if(scope==="all")return null;
+ if(!catalogOptions.length)throw Error("Carregando opções...");
+ if(scope==="codes"){
+  const codes=Array.from(new Set($("codes").value.toUpperCase().split(/[,;\\s]+/).filter(Boolean)));
+  if(!codes.length)throw Error("Informe referências.");
+  const valid=new Set(catalogOptions.map(x=>x.codigo));
+  if(codes.some(x=>!valid.has(x)))throw Error("Há referências inválidas.");return codes;
+ }
+ const chosen=picked(scope==="vendors"?"vendorSelect":"collectionSelect");
+ if(!chosen.length)throw Error("Selecione pelo menos uma opção.");
+ const selection=new Set(chosen);
+ return catalogOptions.filter(x=>selection.has(scope==="vendors"?x.fornecedor:x.colecao)).map(x=>x.codigo);
+}
+function updateScope(){
+ const mode=$("scope").value;
+ [["vendorBox","vendors"],["collectionBox","collections"],["codeBox","codes"]].forEach(([id,value])=>$(id).classList.toggle("hidden",mode!==value));
+ try{const codes=selectedCodes();$("scopeCount").textContent=codes===null?"Catálogo completo":codes.length+" produtos selecionados";}catch(e){$("scopeCount").textContent=e.message}
+}
+function rebuildCollections(){
+ const prior=new Set(picked("collectionSelect")),vendor=$("vendorFilter").value;
+ const vals=Array.from(new Set(catalogOptions.filter(x=>!vendor||x.fornecedor===vendor).map(x=>x.colecao))).sort();
+ $("collectionSelect").innerHTML=vals.map(x=>'<option value="'+escapeHTML(x)+'" '+(prior.has(x)?"selected":"")+'>'+escapeHTML(x)+'</option>').join("");
+ updateScope();
+}
+async function loadOptions(){
+ const data=await call("options");catalogOptions=data.items;
+ const vendors=Array.from(new Set(catalogOptions.map(x=>x.fornecedor))).sort();
+ $("vendorSelect").innerHTML=vendors.map(x=>'<option>'+escapeHTML(x)+'</option>').join("");
+ $("vendorFilter").innerHTML='<option value="">Todos os fornecedores</option>'+vendors.map(x=>'<option>'+escapeHTML(x)+'</option>').join("");
+ rebuildCollections();
+}
+$("scope").onchange=updateScope;$("vendorSelect").onchange=updateScope;$("collectionSelect").onchange=updateScope;$("vendorFilter").onchange=rebuildCollections;$("codes").oninput=updateScope;
 async function refresh(){
  const {data:{session}}=await sb.auth.getSession();
  $("panel").classList.toggle("hidden",!session);$("loginBox").classList.toggle("hidden",!!session);
  if(!session)return;
- try{
+ try{if(!catalogOptions.length)await loadOptions();
   const {items}=await call("list");$("list").innerHTML=items.length?items.map(i=>{
    const status=i.revoked_at?"Revogado":i.expires_at&&Date.parse(i.expires_at)<=Date.now()?"Expirado":"Ativo";
    const expires=i.expires_at?new Date(i.expires_at).toLocaleString("pt-BR"):"Sem vencimento";
@@ -66,7 +102,7 @@ $("logout").onclick=async()=>{await sb.auth.signOut();$("createdBox").classList.
 $("duration").onchange=()=>{$("expiryBox").classList.toggle("hidden",$("duration").value!=="temporary");};
 $("create").onclick=async()=>{
  try{
-  const text=$("codes").value.trim();const codes=text?[...new Set(text.split(/[\s,;]+/).map(s=>s.trim().toUpperCase()).filter(Boolean))]:null;
+  const codes=selectedCodes();
   const temporary=$("duration").value==="temporary";const value=$("expires").value;
   if(temporary&&!value)throw Error("Escolha a data e a hora de expiração.");
   const expires=temporary?new Date(value):null;if(expires&&(!Number.isFinite(expires.getTime())||expires<=new Date()))throw Error("Escolha uma data futura.");
