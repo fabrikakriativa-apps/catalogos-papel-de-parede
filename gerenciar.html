@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Gerenciar convites | Fábrika Kriativa</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#25221e;background:#f7f4ee}
+*{box-sizing:border-box}body{margin:0}header{background:#171717;color:white;padding:23px max(24px,calc((100vw - 850px)/2))}
+header small{color:#ffa974}main{max-width:850px;margin:28px auto;padding:0 20px 60px}
+section{background:white;border:1px solid #e5e0d8;border-radius:14px;padding:24px;margin:20px 0}
+h1{font-size:22px;margin:6px 0}h2{font-size:19px}label{display:block;margin:14px 0 6px;font-weight:650}
+input,textarea,select{width:100%;border:1px solid #cfc9be;border-radius:8px;font:inherit;padding:11px;background:#fff}
+textarea{min-height:100px;resize:vertical}button{border:0;border-radius:8px;background:#c85414;color:white;font:inherit;font-weight:700;padding:12px 19px;cursor:pointer;margin:12px 8px 0 0}
+button.secondary{background:#30302f}button.danger{background:#9e2222}button:disabled{opacity:.5;cursor:default}
+.note,small{color:#625f57}p{line-height:1.6}.hidden{display:none!important}.item{padding:15px 0;border-top:1px solid #eee}
+.item:first-child{border-top:0}.tag{font-size:13px;background:#eee8de;padding:4px 9px;border-radius:20px}
+.error{color:#b22525}.ok{color:#286039}.row{display:flex;gap:14px;flex-wrap:wrap}.row>*{flex:1;min-width:200px}
+#resultLink{word-break:break-all}a{color:#a94610} .nowrap{white-space:nowrap}
+</style></head><body>
+<header><small>FÁBRIKA KRIATIVA · USO INTERNO</small><h1>Convites do catálogo de clientes</h1></header>
+<main>
+<section id="loginBox"><h2>Entrar com acesso interno</h2><p>Utilize o usuário autorizado do sistema SISTEMA no Supabase. O cliente não precisa de login.</p>
+<form id="loginForm"><label for="email">E-mail</label><input id="email" type="email" autocomplete="username" required>
+<label for="password">Senha</label><input id="password" type="password" autocomplete="current-password" required>
+<button type="submit">Entrar</button></form></section>
+<div id="panel" class="hidden">
+<section><button type="button" id="logout" class="secondary">Sair</button><h2>Gerar link exclusivo</h2>
+<label for="label">Identificação do cliente ou seleção</label><input id="label" maxlength="120" placeholder="Ex.: Sala - Cliente Maria">
+<label for="codes">Referências autorizadas (opcional)</label>
+<textarea id="codes" placeholder="FK-0001, FK-0002, FK-0120"></textarea>
+<p class="note">Informe os códigos FK separados por vírgulas ou quebras de linha para compartilhar somente esses produtos. Deixe vazio para compartilhar todo o catálogo de clientes.</p>
+<div class="row"><div><label for="duration">Validade</label><select id="duration"><option value="permanent">Permanente — sem vencimento</option><option value="temporary">Temporário — data e hora</option></select></div><div id="expiryBox" class="hidden"><label for="expires">Expira em (horário local)</label><input type="datetime-local" id="expires"></div></div>
+<button id="create" type="button">Gerar link exclusivo</button>
+<div id="createdBox" class="hidden"><p class="ok"><strong>Link criado.</strong> Copie agora: por segurança, o token completo não é exibido novamente no histórico.</p><input id="resultLink" readonly aria-label="Link gerado"><button type="button" id="copy" class="secondary">Copiar link</button></div>
+</section>
+<section><h2>Links gerados</h2><button type="button" id="refresh" class="secondary">Atualizar lista</button><div id="list"></div></section>
+</div><p id="message" role="status"></p>
+</main>
+<script type="module">
+import {createClient} from "https://esm.sh/@supabase/supabase-js@2.57.4";
+const base="https://dpowbyexrcdcwwqysgzp.supabase.co",key="sb_publishable_5R2zVzcZQVAGGd72zXayFQ_zCp_tJkU";
+const sb=createClient(base,key,{auth:{persistSession:true,autoRefreshToken:true}});
+const api=base+"/functions/v1/catalog-share";
+const $=id=>document.getElementById(id);
+const msg=(s,bad=false)=>{$("message").textContent=s;$("message").className=bad?"error":"ok"};
+const escapeHTML=s=>String(s??"").replace(/[&<>"']/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[x]));
+async function call(action,method="GET",payload){
+ const {data:{session}}=await sb.auth.getSession();
+ if(!session)throw Error("Sessão expirada. Faça login novamente.");
+ const response=await fetch(api+"?action="+encodeURIComponent(action),{method,headers:{"Authorization":"Bearer "+session.access_token,"apikey":key,"Content-Type":"application/json"},body:payload?JSON.stringify(payload):undefined,cache:"no-store"});
+ const data=await response.json();if(!response.ok||!data.ok)throw Error("Operação não concluída: "+(data.reason||response.status));return data;
+}
+async function refresh(){
+ const {data:{session}}=await sb.auth.getSession();
+ $("panel").classList.toggle("hidden",!session);$("loginBox").classList.toggle("hidden",!!session);
+ if(!session)return;
+ try{
+  const {items}=await call("list");$("list").innerHTML=items.length?items.map(i=>{
+   const status=i.revoked_at?"Revogado":i.expires_at&&Date.parse(i.expires_at)<=Date.now()?"Expirado":"Ativo";
+   const expires=i.expires_at?new Date(i.expires_at).toLocaleString("pt-BR"):"Sem vencimento";
+   const count=Array.isArray(i.item_codes)?i.item_codes.length+" produtos":"Catálogo completo";
+   return '<div class="item"><strong>'+escapeHTML(i.label||"Sem identificação")+'</strong> <span class="tag">'+status+'</span><p class="note">Criado: '+new Date(i.created_at).toLocaleString("pt-BR")+' · Validade: '+escapeHTML(expires)+'<br>Conteúdo: '+count+' · Acessos: '+(i.access_count||0)+'</p>'+(status==="Ativo"?'<button class="danger" data-revoke="'+escapeHTML(i.id)+'">Revogar acesso</button>':'')+'</div>';
+  }).join(""):'<p class="note">Nenhum link criado ainda.</p>';
+ }catch(e){msg(e.message,true);}
+}
+$("loginForm").addEventListener("submit",async e=>{e.preventDefault();msg("Autenticando...");const {error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error){msg("Não foi possível entrar: "+error.message,true);return;}$("password").value="";msg("Acesso autorizado.");await refresh();});
+$("logout").onclick=async()=>{await sb.auth.signOut();$("createdBox").classList.add("hidden");await refresh();};
+$("duration").onchange=()=>{$("expiryBox").classList.toggle("hidden",$("duration").value!=="temporary");};
+$("create").onclick=async()=>{
+ try{
+  const text=$("codes").value.trim();const codes=text?[...new Set(text.split(/[\s,;]+/).map(s=>s.trim().toUpperCase()).filter(Boolean))]:null;
+  const temporary=$("duration").value==="temporary";const value=$("expires").value;
+  if(temporary&&!value)throw Error("Escolha a data e a hora de expiração.");
+  const expires=temporary?new Date(value):null;if(expires&&(!Number.isFinite(expires.getTime())||expires<=new Date()))throw Error("Escolha uma data futura.");
+  const result=await call("create","POST",{label:$("label").value.trim(),item_codes:codes,expires_at:expires?expires.toISOString():null});
+  const url=new URL("index.html",location.href);url.search="";url.searchParams.set("token",result.token);
+  $("resultLink").value=url.href;$("createdBox").classList.remove("hidden");msg("Link criado com sucesso.");await refresh();
+ }catch(e){msg(e.message,true)}
+};
+$("copy").onclick=async()=>{try{await navigator.clipboard.writeText($("resultLink").value);msg("Link copiado.");}catch(e){$("resultLink").select();msg("Selecione e copie o link manualmente.",true)}};
+$("refresh").onclick=refresh;
+$("list").addEventListener("click",async e=>{const b=e.target.closest("[data-revoke]");if(!b)return;if(!confirm("Revogar este link agora?"))return;try{await call("revoke","POST",{id:b.dataset.revoke});msg("Link revogado.");await refresh();}catch(e){msg(e.message,true)}});
+await refresh();
+</script></body></html>
