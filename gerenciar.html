@@ -55,7 +55,7 @@ function selectedCodes(){
  const scope=$("scope").value;if(scope==="all")return null;
  if(!catalogOptions.length)throw Error("Carregando opções...");
  if(scope==="codes"){
-  const codes=Array.from(new Set($("codes").value.toUpperCase().split(/[,;\\s]+/).filter(Boolean)));
+  const codes=Array.from(new Set($("codes").value.toUpperCase().split(/[,;\s]+/).filter(Boolean)));
   if(!codes.length)throw Error("Informe referências.");
   const valid=new Set(catalogOptions.map(x=>x.codigo));
   if(codes.some(x=>!valid.has(x)))throw Error("Há referências inválidas.");return codes;
