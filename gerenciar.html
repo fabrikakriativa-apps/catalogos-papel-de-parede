@@ -20,7 +20,7 @@ button.secondary{background:#30302f}button.danger{background:#9e2222}button:disa
 <section id="loginBox"><h2>Acesso interno</h2><p>Informe seu e-mail para entrar.</p>
 <form id="loginForm"><label for="email">E-mail</label><input id="email" type="email" autocomplete="username" required>
 
-<label for="password">Senha (se já configurada)</label><input id="password" type="password" autocomplete="current-password" placeholder="Senha de acesso"><button type="button" id="passwordLogin">Entrar com senha</button><button type="submit" class="secondary">Enviar link por e-mail</button><button type="button" id="forgotPassword" class="secondary">Esqueci minha senha</button></form></section>
+<label for="password">Senha (se já configurada)</label><input id="password" type="password" autocomplete="current-password" placeholder="Senha de acesso"><button type="button" id="googleLogin">Entrar com Google</button><button type="button" id="passwordLogin" class="secondary">Entrar com senha</button><button type="submit" class="secondary">Enviar link por e-mail</button><button type="button" id="forgotPassword" class="secondary">Esqueci minha senha</button></form></section>
 <section id="recoveryBox" class="hidden"><h2>Definir nova senha</h2><p>Crie uma nova senha para o acesso interno.</p>
 <form id="recoveryForm"><label for="newPassword">Nova senha</label><input id="newPassword" type="password" autocomplete="new-password" minlength="8" required>
 <label for="confirmPassword">Confirmar senha</label><input id="confirmPassword" type="password" autocomplete="new-password" minlength="8" required><button type="submit">Salvar nova senha</button></form></section>
@@ -114,6 +114,11 @@ $("passwordLogin").onclick=async()=>{
  const {error}=await sb.auth.signInWithPassword({email,password});
  if(error){msg("Não foi possível autenticar. Confira sua senha.",true);return;}
  $("password").value="";await refresh();
+};
+$("googleLogin").onclick=async()=>{
+ msg("Redirecionando para o Google...");
+ const {error}=await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:recoveryRedirect}});
+ if(error)msg("Não foi possível entrar com o Google: "+error.message,true);
 };
 $("loginForm").addEventListener("submit",async e=>{e.preventDefault();msg("Autenticando...");if($("email").value.trim().toLowerCase()!==internalEmail){msg("E-mail não autorizado.",true);return;}const {error}=await sb.auth.signInWithOtp({email:$("email").value.trim(),options:{emailRedirectTo:recoveryRedirect,shouldCreateUser:false}});if(error){msg("Não foi possível entrar: "+error.message,true);return;}msg("Se o usuário estiver cadastrado no Supabase Auth, o link será enviado para seu e-mail.");});
 $("forgotPassword").onclick=async()=>{
