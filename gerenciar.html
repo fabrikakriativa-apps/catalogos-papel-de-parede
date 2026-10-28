@@ -14,6 +14,11 @@ button.secondary{background:#30302f}button.danger{background:#9e2222}button:disa
 .item:first-child{border-top:0}.tag{font-size:13px;background:#eee8de;padding:4px 9px;border-radius:20px}
 .error{color:#b22525}.ok{color:#286039}.row{display:flex;gap:14px;flex-wrap:wrap}.row>*{flex:1;min-width:200px}
 #resultLink{word-break:break-all}a{color:#a94610} .nowrap{white-space:nowrap}
+.modal{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:20px;background:rgba(23,23,23,.58);backdrop-filter:blur(3px)}
+.modal-card{width:min(100%,520px);margin:0;background:#fff;border:1px solid #e5e0d8;border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.28);padding:26px}
+.modal-card h2{margin:0 0 8px}.modal-card p{margin:0 0 18px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.modal-actions button{margin:0}
+.check-row{display:flex;align-items:center;gap:10px;margin-top:16px;font-weight:650}.check-row input{width:18px;height:18px;margin:0}.modal-error{min-height:22px;margin:10px 0 0!important}
+@media(max-width:520px){.modal{align-items:end;padding:12px}.modal-card{padding:22px;border-radius:16px 16px 10px 10px}.modal-actions{flex-direction:column-reverse}.modal-actions button{width:100%}}
 </style></head><body>
 <header><small>FÁBRIKA KRIATIVA · USO INTERNO</small><h1>Convites do catálogo de clientes</h1></header>
 <main>
@@ -38,6 +43,14 @@ button.secondary{background:#30302f}button.danger{background:#9e2222}button:disa
 <section><h2>Links gerados</h2><button type="button" id="refresh" class="secondary">Atualizar lista</button><div id="list"></div></section>
 </div><p id="message" role="status"></p>
 </main>
+<div id="extendModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="extendTitle">
+<section class="modal-card">
+<h2 id="extendTitle">Prorrogar validade</h2><p class="note">Escolha a nova data e o novo horário de expiração do link.</p>
+<form id="extendForm"><div class="row"><div><label for="extendDate">Data</label><input id="extendDate" type="date" required></div><div><label for="extendTime">Hora</label><input id="extendTime" type="time" required></div></div>
+<label class="check-row" for="extendPermanent"><input id="extendPermanent" type="checkbox">Sem vencimento (permanente)</label>
+<p id="extendError" class="error modal-error" role="alert"></p>
+<div class="modal-actions"><button type="button" id="extendCancel" class="secondary">Cancelar</button><button type="submit" id="extendSave">Salvar nova validade</button></div></form>
+</section></div>
 <script type="module">
 import {createClient} from "https://esm.sh/@supabase/supabase-js@2.57.4";
 const base="https://dpowbyexrcdcwwqysgzp.supabase.co",key="sb_publishable_5R2zVzcZQVAGGd72zXayFQ_zCp_tJkU";
@@ -104,7 +117,7 @@ async function refresh(){
    const status=i.revoked_at?"Revogado":i.expires_at&&Date.parse(i.expires_at)<=Date.now()?"Expirado":"Ativo";
    const expires=i.expires_at?new Date(i.expires_at).toLocaleString("pt-BR"):"Sem vencimento";
    const count=Array.isArray(i.item_codes)?i.item_codes.length+" produtos":"Catálogo completo";
-   return '<div class="item"><strong>'+escapeHTML(i.label||"Sem identificação")+'</strong> <span class="tag">'+status+'</span><p class="note">Criado: '+new Date(i.created_at).toLocaleString("pt-BR")+' · Validade: '+escapeHTML(expires)+'<br>Conteúdo: '+count+' · Acessos: '+(i.access_count||0)+'</p>'+(!i.revoked_at?'<button class="secondary" data-extend="'+escapeHTML(i.id)+'">Prorrogar validade</button>':'')+(status==="Ativo"?'<button class="danger" data-revoke="'+escapeHTML(i.id)+'">Revogar acesso</button>':'')+'</div>';
+   return '<div class="item"><strong>'+escapeHTML(i.label||"Sem identificação")+'</strong> <span class="tag">'+status+'</span><p class="note">Criado: '+new Date(i.created_at).toLocaleString("pt-BR")+' · Validade: '+escapeHTML(expires)+'<br>Conteúdo: '+count+' · Acessos: '+(i.access_count||0)+'</p>'+(!i.revoked_at&&i.expires_at?'<button class="secondary" data-extend="'+escapeHTML(i.id)+'" data-expiry="'+escapeHTML(i.expires_at)+'">Prorrogar validade</button>':'')+(status==="Ativo"?'<button class="danger" data-revoke="'+escapeHTML(i.id)+'">Revogar acesso</button>':'')+'</div>';
   }).join(""):'<p class="note">Nenhum link criado ainda.</p>';
  }catch(e){msg(e.message,true);}
 }
@@ -158,20 +171,36 @@ $("create").onclick=async()=>{
 };
 $("copy").onclick=async()=>{try{await navigator.clipboard.writeText($("resultLink").value);msg("Link copiado.");}catch(e){$("resultLink").select();msg("Selecione e copie o link manualmente.",true)}};
 $("refresh").onclick=refresh;
-$("list").addEventListener("click",async e=>{
- const b=e.target.closest("[data-extend]");if(!b)return;
- const value=prompt("Nova validade (data e hora: AAAA-MM-DD HH:MM). Deixe vazio para tornar permanente:");
- if(value===null)return;
+let extendingId=null;
+const localParts=date=>({date:[date.getFullYear(),String(date.getMonth()+1).padStart(2,"0"),String(date.getDate()).padStart(2,"0")].join("-"),time:[String(date.getHours()).padStart(2,"0"),String(date.getMinutes()).padStart(2,"0")].join(":")});
+function closeExtendModal(){extendingId=null;$("extendModal").classList.add("hidden");$("extendError").textContent="";}
+function openExtendModal(button){
+ extendingId=button.dataset.extend;
+ const current=new Date(button.dataset.expiry),suggested=current>Date.now()?current:new Date(Date.now()+24*60*60*1000);
+ const parts=localParts(suggested);$("extendDate").value=parts.date;$("extendDate").min=localParts(new Date()).date;$("extendTime").value=parts.time;
+ $("extendPermanent").checked=false;$("extendDate").disabled=false;$("extendTime").disabled=false;$("extendError").textContent="";
+ $("extendModal").classList.remove("hidden");$("extendDate").focus();
+}
+$("extendPermanent").onchange=()=>{const disabled=$("extendPermanent").checked;$("extendDate").disabled=disabled;$("extendTime").disabled=disabled;$("extendError").textContent="";};
+$("extendCancel").onclick=closeExtendModal;
+$("extendModal").onclick=e=>{if(e.target===$("extendModal"))closeExtendModal();};
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("extendModal").classList.contains("hidden"))closeExtendModal();});
+$("list").addEventListener("click",e=>{const b=e.target.closest("[data-extend]");if(b)openExtendModal(b);});
+$("extendForm").addEventListener("submit",async e=>{
+ e.preventDefault();if(!extendingId)return;
  try{
-   let expiry=null;
-   if(value.trim()){
-     const d=new Date(value.trim().replace(" ","T"));
-     if(!Number.isFinite(d.getTime())||d.getTime()<=Date.now())throw Error("Informe uma data futura válida.");
-     expiry=d.toISOString();
-   }
-   await call("extend","POST",{id:b.dataset.extend,expires_at:expiry});
-   msg("Validade atualizada sem alterar o link do cliente.");await refresh();
- }catch(err){msg(err.message,true);}
+  let expiry=null;
+  if(!$("extendPermanent").checked){
+   if(!$("extendDate").value||!$("extendTime").value)throw Error("Selecione a data e a hora.");
+   const date=new Date($("extendDate").value+"T"+$("extendTime").value);
+   if(!Number.isFinite(date.getTime())||date.getTime()<=Date.now())throw Error("Escolha uma data e hora futuras.");
+   expiry=date.toISOString();
+  }
+  $("extendSave").disabled=true;
+  await call("extend","POST",{id:extendingId,expires_at:expiry});
+  closeExtendModal();msg("Validade atualizada sem alterar o link do cliente.");await refresh();
+ }catch(err){$("extendError").textContent=err.message}
+ finally{$("extendSave").disabled=false;}
 });
 $("list").addEventListener("click",async e=>{const b=e.target.closest("[data-revoke]");if(!b)return;if(!confirm("Revogar este link agora?"))return;try{await call("revoke","POST",{id:b.dataset.revoke});msg("Link revogado.");await refresh();}catch(e){msg(e.message,true)}});
 sb.auth.onAuthStateChange((event,session)=>{
