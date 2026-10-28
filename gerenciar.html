@@ -20,7 +20,7 @@ button.secondary{background:#30302f}button.danger{background:#9e2222}button:disa
 <section id="loginBox"><h2>Acesso interno</h2><p>Informe seu e-mail para entrar.</p>
 <form id="loginForm"><label for="email">E-mail</label><input id="email" type="email" autocomplete="username" required>
 
-<button type="submit">Enviar link de acesso</button></form></section>
+<label for="password">Senha (se já configurada)</label><input id="password" type="password" autocomplete="current-password" placeholder="Senha de acesso"><button type="button" id="passwordLogin">Entrar com senha</button><button type="submit" class="secondary">Enviar link por e-mail</button></form></section>
 <div id="panel" class="hidden">
 <section><button type="button" id="logout" class="secondary">Sair</button><h2>Gerar link exclusivo</h2>
 <label for="label">Identificação do cliente ou seleção</label><input id="label" maxlength="120" placeholder="Ex.: Sala - Cliente Maria">
@@ -93,10 +93,17 @@ async function refresh(){
    const status=i.revoked_at?"Revogado":i.expires_at&&Date.parse(i.expires_at)<=Date.now()?"Expirado":"Ativo";
    const expires=i.expires_at?new Date(i.expires_at).toLocaleString("pt-BR"):"Sem vencimento";
    const count=Array.isArray(i.item_codes)?i.item_codes.length+" produtos":"Catálogo completo";
-   return '<div class="item"><strong>'+escapeHTML(i.label||"Sem identificação")+'</strong> <span class="tag">'+status+'</span><p class="note">Criado: '+new Date(i.created_at).toLocaleString("pt-BR")+' · Validade: '+escapeHTML(expires)+'<br>Conteúdo: '+count+' · Acessos: '+(i.access_count||0)+'</p>'+(status==="Ativo"?'<button class="danger" data-revoke="'+escapeHTML(i.id)+'">Revogar acesso</button>':'')+'</div>';
+   return '<div class="item"><strong>'+escapeHTML(i.label||"Sem identificação")+'</strong> <span class="tag">'+status+'</span><p class="note">Criado: '+new Date(i.created_at).toLocaleString("pt-BR")+' · Validade: '+escapeHTML(expires)+'<br>Conteúdo: '+count+' · Acessos: '+(i.access_count||0)+'</p>'+(!i.revoked_at?'<button class="secondary" data-extend="'+escapeHTML(i.id)+'">Prorrogar validade</button>':'')+(status==="Ativo"?'<button class="danger" data-revoke="'+escapeHTML(i.id)+'">Revogar acesso</button>':'')+'</div>';
   }).join(""):'<p class="note">Nenhum link criado ainda.</p>';
  }catch(e){msg(e.message,true);}
 }
+$("passwordLogin").onclick=async()=>{
+ const email=$("email").value.trim().toLowerCase(),password=$("password").value;
+ if(email!=="fabrikakriativa@gmail.com"||!password){msg("Confira suas credenciais.",true);return;}
+ const {error}=await sb.auth.signInWithPassword({email,password});
+ if(error){msg("Não foi possível autenticar. Confira sua senha.",true);return;}
+ $("password").value="";await refresh();
+};
 $("loginForm").addEventListener("submit",async e=>{e.preventDefault();msg("Autenticando...");if($("email").value.trim().toLowerCase()!=="fabrikakriativa@gmail.com"){msg("E-mail não autorizado.",true);return;}const {error}=await sb.auth.signInWithOtp({email:$("email").value.trim(),options:{emailRedirectTo:"https://papeldeparedefk-clientes.fabrikakriativa.com.br/gerenciar.html",shouldCreateUser:false}});if(error){msg("Não foi possível entrar: "+error.message,true);return;}msg("Se o usuário estiver cadastrado no Supabase Auth, o link será enviado para seu e-mail.");});
 $("logout").onclick=async()=>{await sb.auth.signOut();$("createdBox").classList.add("hidden");await refresh();};
 $("duration").onchange=()=>{$("expiryBox").classList.toggle("hidden",$("duration").value!=="temporary");};
@@ -113,6 +120,21 @@ $("create").onclick=async()=>{
 };
 $("copy").onclick=async()=>{try{await navigator.clipboard.writeText($("resultLink").value);msg("Link copiado.");}catch(e){$("resultLink").select();msg("Selecione e copie o link manualmente.",true)}};
 $("refresh").onclick=refresh;
+$("list").addEventListener("click",async e=>{
+ const b=e.target.closest("[data-extend]");if(!b)return;
+ const value=prompt("Nova validade (data e hora: AAAA-MM-DD HH:MM). Deixe vazio para tornar permanente:");
+ if(value===null)return;
+ try{
+   let expiry=null;
+   if(value.trim()){
+     const d=new Date(value.trim().replace(" ","T"));
+     if(!Number.isFinite(d.getTime())||d.getTime()<=Date.now())throw Error("Informe uma data futura válida.");
+     expiry=d.toISOString();
+   }
+   await call("extend","POST",{id:b.dataset.extend,expires_at:expiry});
+   msg("Validade atualizada sem alterar o link do cliente.");await refresh();
+ }catch(err){msg(err.message,true);}
+});
 $("list").addEventListener("click",async e=>{const b=e.target.closest("[data-revoke]");if(!b)return;if(!confirm("Revogar este link agora?"))return;try{await call("revoke","POST",{id:b.dataset.revoke});msg("Link revogado.");await refresh();}catch(e){msg(e.message,true)}});
 await refresh();
 sb.auth.onAuthStateChange((event,session)=>{if(event==="SIGNED_IN"||event==="SIGNED_OUT"||event==="TOKEN_REFRESHED"){queueMicrotask(()=>refresh());}});
