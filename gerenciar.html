@@ -1,5 +1,18 @@
 <!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<script>
+(()=>{
+  const params=new URLSearchParams(location.search);
+  if(params.get('return')!=='loja')return;
+  const target=new URL('https://catalogopapeldeparede.fabrikakriativa.com.br/');
+  const code=params.get('code');
+  const error=params.get('error')||params.get('error_code');
+  if(code)target.searchParams.set('code',code);
+  if(error)target.searchParams.set('auth_error',error);
+  target.hash=location.hash;
+  location.replace(target.toString());
+})();
+</script>
 <meta name="robots" content="noindex,nofollow"><title>Gerenciar convites | Fábrika Kriativa</title>
 <style>
 :root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#25221e;background:#f7f4ee}
